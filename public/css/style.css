@@ -1,0 +1,781 @@
+body {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  background: #ffffff; /* Changed background to white */
+  color: #333333; /* Set default text color for readability */
+}
+
+.con {
+  flex: 1;
+}
+
+/* FOR BACKGROUND IMAGES */
+#i {
+  justify-content: center !important;
+  align-items: center;
+}
+
+/* navbar */
+.navbar {
+  background-color: #343a40; /* Dark gray background for better contrast */
+  opacity: 0.95; /* Slight transparency for a soft look */
+}
+
+.navbar-brand {
+  font-size: 24px;
+  color: #ffffff; /* White text for better visibility */
+}
+
+.navbar-brand span {
+  color: #ff9800; /* Accent color for the brand name */
+}
+
+.nav-link {
+  color: #ffffff; /* White text for the links */
+  transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #ff9800; /* Highlight on hover */
+}
+
+
+/* hero */
+.hero {
+  color: #333333; /* Dark text on white background */
+  overflow: hidden;
+  justify-content: center;
+  align-items: center;
+}
+
+.hero h1 {
+  color: #000000; /* Bold black for headings */
+  font-size: 4rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.hero p {
+  color: #555555; /* Softer gray for paragraph text */
+  font-size: 1.25rem;
+  margin-bottom: 30px;
+}
+
+.btn-warning {
+  background-color: #ff9800;
+  border-color: #ff9800;
+  color: #ffffff; /* White text for contrast */
+  transition: background-color 0.3s ease;
+}
+
+.btn-warning:hover {
+  background-color: #e67e00;
+  border-color: #e67e00;
+}
+
+/* Continue with the rest of your CSS rules using these principles */
+
+/* features */
+.feature-box {
+  opacity: 0.9;
+  background-color: #f8f9fa; /* Light gray for subtle contrast against the white background */
+  border-radius: 8px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-box:hover {
+  transform: translateY(-10px);
+  box-shadow: 0px 20px 25px rgba(0, 0, 0, 0.1); /* Softer shadow for light background */
+}
+
+.feature-box .icon i {
+  font-size: 2.75rem;
+  color: #333333; /* Dark gray for icons */
+}
+
+.feature-box h4 {
+  font-size: 22px;
+  color: #000000; /* Bold black for headers */
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
+
+.feature-box p {
+  font-size: 16px;
+  color: #555555; /* Darker gray for paragraph text */
+}
+/* how it works */
+#how-it-works {
+  background: #ffffff; /* Light background */
+}
+
+#how-it-works h2 {
+  color: #000000; /* Dark text for contrast */
+}
+
+.how-it-works-box {
+  opacity: 0.9;
+  background-color: #f8f9fa; /* Subtle light gray */
+  border-radius: 8px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.how-it-works-box:hover {
+  transform: translateY(-10px);
+  box-shadow: 0px 20px 30px rgba(0, 0, 0, 0.3); /* Darker and bolder shadow */
+}
+
+.how-it-works-box .icon i {
+  font-size: 2.75rem;
+  color: #333333; /* Dark gray for icons */
+}
+
+.how-it-works-box h4 {
+  font-size: 22px;
+  color: #000000; /* Black for headers */
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
+
+.how-it-works-box p {
+  font-size: 16px;
+  color: #555555; /* Dark gray for paragraphs */
+}
+
+
+/* meet our team */
+.text-blk {
+  margin: 0;
+  line-height: 25px;
+}
+
+.responsive-cell-block {
+  min-height: 75px;
+}
+
+.responsive-container-block {
+  min-height: 75px;
+  height: fit-content;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 auto;
+  justify-content: space-evenly;
+}
+
+.outer-container {
+  padding: 10px 50px;
+  background: #f8f9fa; /* Light gray for team section */
+}
+
+.inner-container {
+  max-width: 1320px;
+  flex-direction: column;
+  align-items: center;
+  margin: 50px auto;
+}
+
+.section-head-text {
+  font-size: 35px;
+  font-weight: 700;
+  line-height: 48px;
+  color: #000000; /* Dark text */
+  margin: 0 0 10px 0;
+}
+
+.section-subhead-text {
+  font-size: 25px;
+  color: #555555; /* Dark gray text */
+  line-height: 35px;
+  max-width: 470px;
+  text-align: center;
+  margin: 0 0 60px 0;
+}
+
+.img-wrapper {
+  width: 100%;
+}
+
+.team-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.social-media-links {
+  width: 125px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.name {
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: #000000; /* Black for names */
+  margin: 0 0 5px 0;
+}
+
+.position {
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: #666666; /* Medium gray for positions */
+  margin: 0 0 50px 0;
+}
+
+.team-img {
+  width: 100%;
+  height: 100%;
+  margin-bottom: 1rem;
+}
+
+.team-card-container {
+  width: 280px;
+  margin: 0 0 40px 0;
+}
+
+@media (max-width: 500px) {
+  .outer-container {
+    padding: 10px 20px;
+  }
+
+  .section-head-text {
+    text-align: center;
+  }
+}
+/* pricing */
+#pricing {
+  background: #ffffff; /* Light background */
+}
+
+.pricing-box {
+  background-color: #ffd966; /* Soft yellow for pricing boxes */
+  border-radius: 8px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.pricing-box:hover {
+  transform: translateY(-10px);
+  box-shadow: 0px 20px 25px rgba(0, 0, 0, 0.1); /* Light hover shadow */
+}
+
+.pricing-box h3 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333333; /* Dark gray for text */
+}
+
+.price {
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #000000; /* Black for price emphasis */
+}
+
+/* footer */
+footer {
+  background-color: #f8f9fa; /* Light gray background */
+  color: #000000; /* Dark text for contrast */
+  padding: 40px 0; /* Increased padding for spacing */
+  margin-top: 50px; /* Added margin to separate from page content */
+  border-top: 4px solid #ff9800; /* Orange border on top for separation */
+  box-shadow: 0px -5px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow for distinction */
+}
+
+footer h5 {
+  font-size: 18px;
+  margin-bottom: 20px;
+  color: #000000; /* Black for headings */
+}
+
+footer p {
+  font-size: 16px;
+  color: #555555; /* Medium gray for text */
+}
+
+footer ul {
+  padding-left: 0;
+  list-style: none;
+}
+
+footer ul li {
+  margin-bottom: 10px;
+}
+
+footer ul li a {
+  color: #333333; /* Dark gray links */
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+footer ul li a:hover {
+  color: #ff9800; /* Orange hover effect */
+}
+
+.text-center1 {
+  margin-top: 30px;
+}
+
+.text-muted {
+  color: #777777 !important; /* Slightly darker muted text */
+}
+
+.social {
+  margin-left: 0.25rem;
+  color: #555555; /* Medium gray for social icons */
+}
+
+.social:hover {
+  color: #ff9800; /* Orange hover for social icons */
+}
+
+/* about us */
+.hero-section {
+  background: linear-gradient(to bottom right, #ffffff, #f7f7f7); /* Light gradient background */
+  padding: 0px;
+  color: #000000; /* Black for text */
+}
+
+.hero-section h1 {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #000000; /* Black for header */
+}
+
+.hero-section .lead {
+  font-size: 1.25rem;
+  margin-bottom: 30px;
+  color: #333333; /* Dark gray for subtext */
+}
+
+.hero-section .btn-outline-light {
+  border: 2px solid #000000; /* Black border */
+  color: #000000; /* Black text */
+  padding: 10px 20px;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+}
+
+.hero-section .btn-outline-light:hover {
+  background-color: #000000; /* Black background */
+  color: #ffffff; /* White text */
+}
+
+.mission-statement {
+  background-color: #f7f7f7; /* Light gray for contrast */
+}
+
+.mission-statement h2 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #000000; /* Black for header */
+}
+
+.mission-statement p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #555555; /* Medium gray for text */
+}
+
+.our-values {
+  background-color: #1c1c1c; /* Dark background for contrast */
+  color: #ffffff; /* White for text */
+}
+
+.our-values h2 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #ffffff; /* White for header */
+}
+
+.our-values h4 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-top: 10px;
+  color: #ff9800; /* Orange for subheaders */
+}
+
+.our-values p {
+  font-size: 1rem;
+  color: #dddddd; /* Light gray for text */
+}
+
+/* contact us */
+.contact-us {
+  background-color: #f9f9f9 !important; /* Light gray background */
+}
+
+.contact-us h2,
+.contact-us h4 {
+  color: #000000; /* Black for headers */
+}
+
+.contact-us label {
+  color: #555555; /* Medium gray for labels */
+}
+
+.contact-us .form-control {
+  background-color: #ffffff; /* White input background */
+  border: 1px solid #cccccc; /* Light gray border */
+  color: #000000; /* Black input text */
+}
+
+.contact-us .form-control::placeholder {
+  color: #999999; /* Gray placeholders */
+}
+
+.contact-us .btn-primary {
+  background-color: #ffd966; /* Soft yellow button */
+  border-color: #ffd966;
+  color: #000000; /* Black text */
+}
+
+.contact-us .btn-primary:hover {
+  background-color: #ffcc33; /* Darker yellow hover */
+  border-color: #ffcc33;
+  color: #000000; /* Black text */
+}
+
+.contact-us p {
+  color: #555555; /* Medium gray for text */
+}
+
+.contact-us i {
+  margin-right: 10px;
+  color: #000000; /* Black icons */
+}
+
+.get {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+/* login/signup */
+.form-container {
+  width: 350px;
+  border-radius: 0.75rem;
+  background-color: #ffffff; /* White background */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Light shadow for depth */
+  margin: 1.5rem 0 1.5rem 0;
+  padding: 2rem;
+  color: #333333; /* Dark gray for text */
+}
+
+.title {
+  text-align: center;
+  line-height: 2rem;
+  font-weight: 700;
+  color: #000000; /* Black title */
+}
+
+.form {
+  margin-top: 1.5rem;
+}
+
+.input-group {
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.input-group label {
+  display: block;
+  color: #555555; /* Medium gray for labels */
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.input-group input {
+  width: 100%;
+  border-radius: 0.375rem;
+  border: 1px solid #cccccc; /* Light gray border */
+  outline: 0;
+  background-color: #f9f9f9; /* Light input background */
+  padding: 0.75rem 1rem;
+  color: #333333; /* Dark gray input text */
+}
+
+.input-group input:focus {
+  border-color: #0066cc; /* Light blue focus */
+  box-shadow: 0 0 5px rgba(0, 102, 204, 0.7); /* Subtle glow on focus */
+}
+
+.forgot {
+  display: flex;
+  justify-content: flex-end;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: #777777; /* Medium gray */
+  margin: 8px 0 14px 0;
+}
+
+.forgot a,
+.signup a {
+  color: #0066cc; /* Blue links */
+  text-decoration: none;
+  font-size: 1rem;
+}
+
+.forgot a:hover,
+.signup a:hover {
+  text-decoration: underline;
+}
+
+.sign {
+  display: block;
+  width: 100%;
+  background-color: #0066cc; /* Blue button */
+  padding: 0.75rem;
+  margin-top: 1.25rem;
+  text-align: center;
+  color: #ffffff; /* White button text */
+  border: none;
+  border-radius: 0.375rem;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.sign:hover {
+  background-color: #0052a3; /* Darker blue on hover */
+}
+
+.social-message {
+  display: flex;
+  align-items: center;
+  padding-top: 1rem;
+}
+
+.line {
+  height: 1px;
+  flex: 1 1 0%;
+  background-color: #cccccc; /* Light gray line */
+}
+
+.social-message .message {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: #555555; /* Medium gray */
+}
+
+.social-icons {
+  display: flex;
+  justify-content: center;
+}
+
+.social-icons .icon {
+  border-radius: 0.125rem;
+  padding: 0.75rem;
+  border: none;
+  background-color: #f0f0f0; /* Light gray icon background */
+  margin-left: 8px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.social-icons .icon:hover {
+  background-color: #e6e6e6; /* Slightly darker gray on hover */
+  transform: scale(1.1); /* Slight zoom on hover */
+}
+
+.login-icon {
+  font-size: 1.5rem;
+  color: #0066cc; /* Blue icon */
+}
+
+.signup {
+  text-align: center;
+  font-size: 0.75rem;
+  margin-top: 0.5rem;
+  line-height: 1rem;
+  color: #777777; /* Medium gray text */
+}
+
+.btn1 {
+  margin-top: 10px;
+  width: 100%;
+  height: 50px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 500;
+  gap: 10px;
+  border: 1px solid #cccccc; /* Light gray border */
+  background-color: #ffffff; /* White button background */
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn1:hover {
+  background-color: #f2f2f2; /* Slightly darker white on hover */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.google-button {
+  text-decoration: none;
+  color: #000000; /* Black text */
+}
+/* PRICING */
+header {
+  text-align: center;
+  padding: 50px;
+  color: #333333; /* Dark text */
+}
+
+header h1 {
+  margin: 0;
+  font-size: 2.5em;
+  color: #000000; /* Black header */
+}
+
+header p {
+  margin-top: 10px;
+  font-size: 1.2em;
+  color: #555555; /* Medium gray for description */
+}
+
+.pricing {
+  color: #333333; /* Dark text */
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  padding: 50px 0;
+  flex-wrap: wrap; /* Ensures responsiveness */
+}
+
+.pricing-plan {
+  color: #333333; /* Dark text */
+  background: #ffffff; /* White background */
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  padding: 20px;
+  text-align: center;
+  width: 300px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.pricing-plan:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Deeper shadow on hover */
+}
+
+.pricing-plan h2 {
+  font-size: 1.8em;
+  margin-bottom: 10px;
+  color: #000000; /* Black header */
+}
+
+.price {
+  font-size: 2em;
+  color: #0066cc; /* Blue price text */
+  margin: 10px 0;
+}
+
+.pricing-plan ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 20px 0;
+}
+
+.pricing-plan ul li {
+  padding: 10px 0;
+  border-bottom: 1px solid #e0e0e0; /* Light gray divider */
+  color: #555555; /* Medium gray for list items */
+}
+
+.pricing-plan button {
+  background-color: #0066cc; /* Blue button */
+  color: #ffffff; /* White text */
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.pricing-plan button:hover {
+  background-color: #0052a3; /* Darker blue on hover */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Light shadow */
+}
+
+.featured {
+  border: 2px solid #0066cc; /* Blue border for featured plans */
+}
+
+#p {
+  text-align: center;
+  padding: 20px;
+  color: #333333; /* Dark text */
+}
+
+/* INVENTORY */
+.inventory-section {
+  text-align: center;
+  background-color: #f9f9f9; /* Light gray background */
+  padding: 80px 0;
+}
+
+.inventory-section h2 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #000000; /* Black header */
+}
+
+.inventory-section label {
+  font-size: 1rem;
+  color: #555555; /* Medium gray for labels */
+}
+
+.inventory-section .form-control {
+  background-color: #ffffff; /* White input background */
+  border: 2px solid #cccccc; /* Light gray border */
+  color: #333333; /* Dark gray text */
+  border-radius: 6px;
+  padding: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.inventory-section .form-control:focus {
+  border-color: #0066cc; /* Blue border on focus */
+  box-shadow: 0 0 5px rgba(0, 102, 204, 0.5); /* Subtle glow */
+}
+
+.inventory-section .btn-block {
+  width: 100%;
+  justify-content: center;
+  background-color: #0066cc; /* Blue button */
+  color: #ffffff; /* White text */
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.inventory-section .btn-block:hover {
+  background-color: #0052a3; /* Darker blue on hover */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Light shadow */
+}
+
+.space {
+  width: 100%;
+  margin-left: 3px;
+}
+
+@media (max-width: 768px) {
+  .inventory-section {
+    padding: 60px 20px;
+  }
+
+  .pricing {
+    flex-direction: column; /* Stack cards vertically on smaller screens */
+    align-items: center;
+  }
+
+  .pricing-plan {
+    width: 100%; /* Full-width cards for smaller screens */
+    max-width: 350px;
+  }
+}

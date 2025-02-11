@@ -1,0 +1,124 @@
+<style>
+  body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+  color: #333;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Indie+Flower&family=Roboto+Mono:wght@500&display=swap');
+
+.animated-noti {
+  font-family: 'Indie Flower', cursive;
+
+    font-size: 2rem;
+    color: #333; /* Default color (dark gray for white background) */
+    text-align: center;
+    margin: 20px;
+    animation: glow 3s infinite alternate,colorChange 4s infinite, float 5s infinite ease-in-out;
+}
+
+/* Color Change Animation */
+@keyframes glow {
+    0% {
+        text-shadow: 0 0 5px #baf2fc;
+    }
+    100% {
+        text-shadow: 0 0 20px #baf2fc;
+    }
+}
+
+@keyframes colorChange {
+    0% {
+        color: #ff6f61; /* Red-orange */
+    }
+    25% {
+        color: #42a5f5; /* Blue */
+    }
+    50% {
+        color: #66bb6a; /* Green */
+    }
+    75% {
+        color: #ffa726; /* Orange */
+    }
+    100% {
+        color: #ff6f61; /* Back to Red-orange */
+    }
+}
+
+/* Float Animation */
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+h1 {
+  text-align: center;
+  color: #444;
+  margin-top: 20px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 20px auto;
+  max-width: 600px;
+}
+
+li {
+  background: #fff;
+  margin: 10px 0;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+li strong {
+  color: #d9534f;
+}
+
+p {
+  text-align: center;
+  margin-top: 20px;
+  color: #777;
+}
+
+a {
+  display: block;
+  text-align: center;
+  margin: 20px auto;
+  text-decoration: none;
+  color: #fff;
+  background-color: #007bff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  max-width: 200px;
+}
+
+a:hover {
+  background-color: #0056b3;
+}
+
+  </style>
+  <h1 class="animated-noti">Inventory Notifications</h1>
+  <ul>
+    <% if (upcomingExpiry.length > 0) { %>
+      <% upcomingExpiry.forEach(item => { %>
+        <li>
+          <strong><%= item.itemName %></strong> is nearing expiry on 
+          <%= item.expiryDate.toDateString() %>.
+        </li>
+      <% }) %>
+    <% } else { %>
+      <p>No items nearing expiry in the next 7 days.</p>
+    <% } %>
+  </ul>
+  <a href="/home">Go back to Home</a>

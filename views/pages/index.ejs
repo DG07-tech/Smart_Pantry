@@ -1,0 +1,176 @@
+<% layout("/layouts/boilerplate") %>
+<style>
+.hero {
+    position: relative;
+    overflow: hidden;
+    background-color: #f0f0f0; /* Light background */
+}
+
+.container2 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Spacing between h2 and h4 */
+.animated-text {
+    margin-bottom: 1.5rem; /* Add space between h2 and h4 */
+    font-size: 2.5rem;
+    color: #333333; /* Dark text */
+    animation: textWave 2s ease-in-out infinite alternate;
+}
+
+.animated-subtext {
+    margin-bottom: 2rem; /* Space below h4 for balance */
+    font-size: 1.5rem;
+    color: #666666; 
+    animation: fadeIn 2s ease-in;
+}
+
+/* Button Animation */
+.btn-animated {
+    animation: pulseGlow 2s infinite;
+}
+
+/* Animations */
+@keyframes textWave {
+    0% {
+        letter-spacing: 2px;
+        color: rgba(34,139,34,0.4);
+    }
+    100% {
+        letter-spacing: 6px;
+        color: #004D40;
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulseGlow {
+    0% {
+        box-shadow: 0 0 10px rgba(255, 165, 0, 0.8);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(255, 165, 0, 1);
+    }
+    100% {
+        box-shadow: 0 0 10px rgba(255, 165, 0, 0.8);
+    }
+}
+
+</style>
+<header class="hero text-center py-5">
+    <div class="container">
+        <p class="lead mb-4"></p>
+        <h2 class="animated-text">Welcome to Smart Pantry</h2>
+        <h4 class="animated-subtext">Effortlessly Manage your Food Waste</h4>
+        <a href="/signup" class="btn btn-warning btn-lg btn-animated">Get Started</a>
+    </div>
+</header>
+
+<section id="features" class="py-5">
+    <div class="container2 text-center">
+        <h2 class="display-4 mb-5" style="color: #333333;">Why Choose Our Pantry Management?</h2>
+        <div class="row">
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="feature-box p-4 h-80" style="background: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    <div class="icon mb-3">
+                        <i class="fa-solid fa-shelves"></i>
+                    </div>
+                    <h4>Inventory Tracking</h4>
+                    <p>Keep track of your pantry items with ease.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="feature-box p-4 h-100" style="background: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    <div class="icon mb-3">
+                        <i class="fa-solid fa-calendar-exclamation"></i>
+                    </div>
+                    <h4>Expiration Date Alerts</h4>
+                    <p>Get notified before items expire.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="feature-box p-4 h-100" style="background: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    <div class="icon mb-3">
+                        <i class="fa-regular fa-clipboard-list-check"></i>
+                    </div>
+                    <h4>Shopping List Integration</h4>
+                    <p>Seamlessly add items to your shopping list.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="feature-box p-4 h-100" style="background: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    <div class="icon mb-3">
+                        <i class="fa-solid fa-utensils"></i>
+                    </div>
+                    <h4>Recipe Suggestions</h4>
+                    <p>Get recipes based on available ingredients.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="how-it-works" class="py-5" style="background-color: #f9f9f9;">
+    <div class="container text-center">
+        <h2 class="display-4 mb-5" style="color: #333333;">How It Works?</h2>
+        <div class="row">
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="how-it-works-box p-4 h-100" style="background: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    <div class="icon mb-3">
+                        <i class="fa-solid fa-barcode-scan"></i>
+                    </div>
+                    <h4>Scan & Add Items</h4>
+                    <p>Quickly scan and add items to your pantry list.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="how-it-works-box p-4 h-100" style="background: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    <div class="icon mb-3">
+                        <i class="fa-solid fa-calendar-days"></i>
+                    </div>
+                    <h4>Track Expiry Dates</h4>
+                    <p>Stay on top of expiration dates to reduce waste.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="how-it-works-box p-4 h-100" style="background: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    <div class="icon mb-3">
+                        <i class="fa-solid fa-bell"></i>
+                    </div>
+                    <h4>Get Notifications</h4>
+                    <p>Receive alerts for expiring items and low stock.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="how-it-works-box p-4 h-100" style="background: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    <div class="icon mb-3">
+                        <i class="fa-solid fa-dumpster"></i>
+                    </div>
+                    <h4>Enjoy Less Waste</h4>
+                    <p>Optimize your pantry use and minimize food waste.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="cta" class="text-white py-5 text-center" style="background-color: #0066cc;">
+    <div class="container">
+        <h2 class="display-4 mb-4">Ready to Get Started?</h2>
+        <p class="lead mb-4">Join us today and take control of your pantry like never before.</p>
+        <a href="/signup" class="btn btn-warning btn-lg">Sign Up Now</a>
+    </div>
+</section>
+

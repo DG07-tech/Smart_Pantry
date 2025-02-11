@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Box</title>
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<style>
+  body {
+    font-family: 'Arial', sans-serif;
+    background-color: #121212; /* Dark background */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .payment-box {
+    background: #1e1e2e; /* Darker box color */
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    padding: 20px;
+    color: #ffffff;
+  }
+
+  .payment-box h2 {
+    margin-bottom: 20px;
+    color: #e5e5e5;
+  }
+
+  .payment-options {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  .payment-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80px;
+    text-align: center;
+  }
+
+  .payment-option img {
+    margin-top: 20px;
+    width: 100%; /* Ensure flexibility */
+    max-width: 60px; /* Max size */
+    height: auto; /* Maintain aspect ratio */
+    margin-bottom: 10px;
+    border-radius: 8px;
+  }
+  .payment-option svg {
+    width: 100%; /* Ensure flexibility */
+    max-width: 60px; /* Max size */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 8px;
+  }
+
+  .payment-option p {
+    font-size: 14px;
+    color: #cfcfcf;
+  }
+
+  .pay-now {
+    background-color: #4caf50;
+    color: #ffffff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+    width: 100%;
+  }
+
+  .pay-now:hover {
+    background-color: #45a049;
+  }
+
+  .separator {
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+  }
+
+  .separator .line {
+    flex: 1;
+    height: 1px;
+    background-color: #444444;
+    margin: 0 10px;
+  }
+
+  .separator p {
+    color: #cfcfcf;
+    font-size: 14px;
+    margin: 0;
+  }
+
+  .credit-card-info--form {
+    text-align: left;
+    margin-top: 15px;
+  }
+
+  .input_container {
+    margin-bottom: 15px;
+  }
+
+  .input_label {
+    display: block;
+    font-size: 14px;
+    color: #e5e5e5;
+    margin-bottom: 5px;
+  }
+
+  .input_field {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #444444;
+    border-radius: 5px;
+    background-color: #2a2a3c;
+    color: #ffffff;
+    box-sizing: border-box;
+  }
+
+  .input_field:focus {
+    outline: none;
+    border-color: #4caf50;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+  }
+
+  .split {
+    display: flex;
+    gap: 10px;
+  }
+
+  .split .input_field {
+    width: calc(50% - 5px);
+  }
+
+  .purchase--btn {
+    background-color: #4caf50;
+    color: #ffffff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    display: block;
+    margin: 20px auto 0;
+    width: 100%;
+    text-align: center;
+  }
+
+  .purchase--btn:hover {
+    background-color: #45a049;
+  }
+
+  @media (max-width: 480px) {
+    .payment-options {
+      gap: 10px;
+    }
+
+    .payment-option {
+      width: 70px;
+    }
+
+    .payment-option img {
+      max-width: 50px;
+    }
+  }
+</style>
+<div class="payment-box">
+  <h2>Choose Your Payment Method</h2>
+  <div class="payment-options">
+    <div class="payment-option">
+      <a href=><img src="https://pay.google.com/about/static_kcs/images/logos/google-pay-logo.svg" alt="Google Pay"></a>
+      <p>Google Pay</p>
+    </div>
+    <div class="payment-option">
+      <a href=""><svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 48 48">
+        <path fill="#0d47a1" d="M5.446 18.01H.548c-.277 0-.502.167-.503.502L0 30.519c-.001.3.196.45.465.45.735 0 1.335 0 2.07 0C2.79 30.969 3 30.844 3 30.594 3 29.483 3 28.111 3 27l2.126.009c1.399-.092 2.335-.742 2.725-2.052.117-.393.14-.733.14-1.137l.11-2.862C7.999 18.946 6.949 18.181 5.446 18.01zM4.995 23.465C4.995 23.759 4.754 24 4.461 24H3v-3h1.461c.293 0 .534.24.534.535V23.465zM13.938 18h-3.423c-.26 0-.483.08-.483.351 0 .706 0 1.495 0 2.201C10.06 20.846 10.263 21 10.552 21h2.855c.594 0 .532.972 0 1H11.84C10.101 22 9 23.562 9 25.137c0 .42.005 1.406 0 1.863-.008.651-.014 1.311.112 1.899C9.336 29.939 10.235 31 11.597 31h4.228c.541 0 1.173-.474 1.173-1.101v-8.274C17.026 19.443 15.942 18.117 13.938 18zM14 27.55c0 .248-.202.45-.448.45h-1.105C12.201 28 12 27.798 12 27.55v-2.101C12 25.202 12.201 25 12.447 25h1.105C13.798 25 14 25.202 14 25.449V27.55zM18 18.594v5.608c.124 1.6 1.608 2.798 3.171 2.798h1.414c.597 0 .561.969 0 .969H19.49c-.339 0-.462.177-.462.476v2.152c0 .226.183.396.422.396h2.959c2.416 0 3.592-1.159 3.591-3.757v-8.84c0-.276-.175-.383-.342-.383h-2.302c-.224 0-.355.243-.355.422v5.218c0 .199-.111.316-.29.316H21.41c-.264 0-.409-.143-.409-.396v-5.058C21 18.218 20.88 18 20.552 18c-.778 0-1.442 0-2.22 0C18.067 18 18 18.263 18 18.594L18 18.594z"></path><path fill="#00adee" d="M27.038 20.569v-2.138c0-.237.194-.431.43-.431H28c1.368-.285 1.851-.62 2.688-1.522.514-.557.966-.704 1.298-.113L32 18h1.569C33.807 18 34 18.194 34 18.431v2.138C34 20.805 33.806 21 33.569 21H32v9.569C32 30.807 31.806 31 31.57 31h-2.14C29.193 31 29 30.807 29 30.569V21h-1.531C27.234 21 27.038 20.806 27.038 20.569L27.038 20.569zM42.991 30.465c0 .294-.244.535-.539.535h-1.91c-.297 0-.54-.241-.54-.535v-6.623-1.871c0-1.284-2.002-1.284-2.002 0v8.494C38 30.759 37.758 31 37.461 31H35.54C35.243 31 35 30.759 35 30.465V18.537C35 18.241 35.243 18 35.54 18h1.976c.297 0 .539.241.539.537v.292c1.32-1.266 3.302-.973 4.416.228 2.097-2.405 5.69-.262 5.523 2.375 0 2.916-.026 6.093-.026 9.033 0 .294-.244.535-.538.535h-1.891C45.242 31 45 30.759 45 30.465c0-2.786 0-5.701 0-8.44 0-1.307-2-1.37-2 0v8.44H42.991z"></path>
+        </svg></a>
+      <p>Paytm</p>
+    </div>
+    <div class="payment-option">
+      <a href=""><img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Debit Card"></a>
+      <p>Debit Card</p>
+    </div>
+  </div>
+  <div class="separator">
+    <hr class="line">
+    <p>or pay using credit card</p>
+    <hr class="line">
+  </div>
+  <div class="credit-card-info--form">
+    <div class="input_container">
+      <label for="card_holder_name" class="input_label">Card holder full name</label>
+      <input id="card_holder_name" class="input_field" type="text" name="card-holder-name" placeholder="Enter your full name">
+    </div>
+    <div class="input_container">
+      <label for="card_number" class="input_label">Card Number</label>
+      <input id="card_number" class="input_field" type="number" name="card-number" placeholder="0000 0000 0000 0000">
+    </div>
+    <div class="input_container">
+      <label class="input_label">Expiry Date / CVV</label>
+      <div class="split">
+        <input class="input_field" type="text" name="expiry-date" placeholder="MM/YY">
+        <input class="input_field" type="number" name="cvv" placeholder="CVV">
+      </div>
+    </div>
+  </div>
+  <button class="purchase--btn">Checkout</button>
+</div>
+</body>
+</html>
