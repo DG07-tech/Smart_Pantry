@@ -2,6 +2,9 @@ body {
   font-family: "Plus Jakarta Sans", sans-serif;
   background: #ffffff; /* Changed background to white */
   color: #333333; /* Set default text color for readability */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 .con {
@@ -37,7 +40,6 @@ body {
 .nav-link:hover {
   color: #ff9800; /* Highlight on hover */
 }
-
 
 /* hero */
 .hero {
@@ -140,7 +142,6 @@ body {
   font-size: 16px;
   color: #555555; /* Dark gray for paragraphs */
 }
-
 
 /* meet our team */
 .text-blk {
@@ -329,7 +330,11 @@ footer ul li a:hover {
 
 /* about us */
 .hero-section {
-  background: linear-gradient(to bottom right, #ffffff, #f7f7f7); /* Light gradient background */
+  background: linear-gradient(
+    to bottom right,
+    #ffffff,
+    #f7f7f7
+  ); /* Light gradient background */
   padding: 0px;
   color: #000000; /* Black for text */
 }
