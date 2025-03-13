@@ -11,6 +11,7 @@ const session = require("express-session");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
+const Inventory = require("./models/inventory.js");
 const wrapAsync = require("./utils/wrapAsync.js");
 const flash = require("connect-flash");
 const ExpressError = require("./utils/ExpressError.js");
@@ -45,7 +46,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Session setup
 const sessionOptions = {
-  secret: "helloworld",
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
   cookie: {
@@ -131,105 +132,156 @@ app.get("/contactus", (req, res) => {
 app.get("/features", (req, res) => {
   res.render("pages/features.ejs");
 });
-app.get("/inventory", (req, res) => {
+app.get("/inventory", isLoggedIn, (req, res) => {
   res.render("users/inventory.ejs");
 });
-app.get("/signup", (req, res) => {
-  res.render("users/signup.ejs");
-});
-app.get("/payment", (req, res) => {
+
+app.get("/payment", isLoggedIn, (req, res) => {
   res.render("users/payment.ejs");
 });
-app.get("/viewinventory", (req, res) => {
+app.get("/viewinventory", isLoggedIn, (req, res) => {
   res.render("users/viewinventory.ejs");
 });
-
 
 //*************************************************************************** */
 
 // Notification route
-app.get("/notification", async (req, res) => {
-  try {
-    const today = new Date();
-    const upcomingExpiry = await Inventory.find({
-      expiryDate: { $lte: new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000) },
-    });
-    res.render("users/notification.ejs", { upcomingExpiry });
-  } catch (err) {
-    console.error(err);
-    req.flash("error", "Unable to fetch notifications");
-    res.redirect("/home");
-  }
-});
+app.get(
+  "/notification",
+  isLoggedIn,
+  wrapAsync(async (req, res) => {
+    try {
+      const today = new Date();
+      const upcomingExpiry = await Inventory.find({
+        expiryDate: {
+          $lte: new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000),
+        },
+        owner: req.user._id,
+      });
+      res.render("users/notification.ejs", { upcomingExpiry });
+    } catch (err) {
+      console.error(err);
+      req.flash("error", "Unable to fetch notifications");
+      res.redirect("/home");
+    }
+  })
+);
 
 //********************************************************************************//
-// Inventory Schema and Model
-const inventorySchema = new mongoose.Schema({
-  itemName: { type: String, required: true },
-  expiryDate: { type: Date, required: true },
-  quantity: { type: Number, required: true },
-});
-const Inventory = mongoose.model("Inventory", inventorySchema);
 
 // Add inventory to database
-app.post("/inventory/add", async (req, res) => {
-  const { itemName, expiryDate, quantity } = req.body;
+app.post(
+  "/inventory/add",
+  wrapAsync(async (req, res) => {
+    const { itemName, expiryDate, quantity } = req.body;
+    try {
+      // Save inventory to the database
+      const newInventory = new Inventory({
+        itemName,
+        expiryDate,
+        quantity,
+        owner: req.user._id,
+      });
+      await newInventory.save();
 
-  try {
-    // Save inventory to the database
-    const newInventory = new Inventory({ itemName, expiryDate, quantity });
-    await newInventory.save();
-
-    req.flash("success", "Inventory item added successfully!");
-    res.redirect("/inventory");
-  } catch (error) {
-    console.error("Error adding inventory:", error);
-    req.flash("error", "Failed to add inventory item.");
-    res.redirect("/inventory");
-  }
-});
+      req.flash("success", "Inventory item added successfully!");
+      res.redirect("/inventory");
+    } catch (error) {
+      console.error("Error adding inventory:", error);
+      req.flash("error", "Failed to add inventory item.");
+      res.redirect("/inventory");
+    }
+  })
+);
 
 // View inventory
-app.get("/inventory/view", async (req, res) => {
-  try {
-    const inventoryItems = await Inventory.find();
-    res.render("users/viewinventory", { inventoryItems });
-  } catch (err) {
-    console.error(err);
-    req.flash("error", "Unable to fetch inventory items");
-    res.redirect("/viewinventory");
-  }
-});
+app.get(
+  "/inventory/view",
+  isLoggedIn,
+  wrapAsync(async (req, res) => {
+    try {
+      const inventoryItems = await Inventory.find({ owner: req.user._id });
+      res.render("users/viewinventory", { inventoryItems });
+    } catch (err) {
+      console.error(err);
+      req.flash("error", "Unable to fetch inventory items");
+      res.redirect("/viewinventory");
+    }
+  })
+);
 
 // Delete inventory item
-app.post("/inventory/delete/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    await Inventory.findByIdAndDelete(id);
+app.post(
+  "/inventory/delete/:id",
+  isLoggedIn,
+  wrapAsync(async (req, res) => {
+    try {
+      const { id } = req.params;
+      await Inventory.findByIdAndDelete(id);
 
-    req.flash("success", "Inventory item deleted successfully!");
-    res.redirect("/inventory/view");
-  } catch (err) {
-    console.error(err);
-    req.flash("error", "Failed to delete inventory item.");
-    res.redirect("/inventory/view");
-  }
+      req.flash("success", "Inventory item deleted successfully!");
+      res.redirect("/inventory/view");
+    } catch (err) {
+      console.error(err);
+      req.flash("error", "Failed to delete inventory item.");
+      res.redirect("/inventory/view");
+    }
+  })
+);
+
+// recipie suggestions
+app.get(
+  "/recipies",
+  isLoggedIn,
+  wrapAsync(async (req, res) => {
+    try {
+      const inventoryItems = await Inventory.find({ owner: req.user._id });
+      if (inventoryItems.length === 0) {
+        res.render("pages/recipies.ejs", {
+          recipes: [],
+          message: "No ingredients found in inventory.",
+        });
+      } else {
+        const ingredients = inventoryItems
+          .map((item) => item.itemName)
+          .join(",");
+        const apiUrl = `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${encodeURIComponent(
+          ingredients
+        )}&number=10&ranking=1&ignorePantry=true&apiKey=${
+          process.env.SPOONACULAR_RECIPIE_KEY
+        }`;
+
+        // Call Spoonacular API
+        const response = await axios.get(apiUrl);
+        res.render("pages/recipies.ejs", {
+          recipes: response.data,
+          message: "",
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching recipes:", error);
+      res.status(500).json({ error: "Failed to fetch recipes" });
+    }
+  })
+);
+
+app.get("/signup", (req, res) => {
+  res.render("users/signup.ejs");
 });
-
 app.post(
   "/signup",
   wrapAsync(async (req, res) => {
     try {
       let { username, email, password } = req.body;
       const newUser = new User({ email, username });
-        const registeredUser = await User.register(newUser, password);
-        req.login(registeredUser, (err) => {
-          if (err) {
-            return next(err);
-          }
-          req.flash("success", "user was registered");
-          res.redirect("/home");
-        });
+      const registeredUser = await User.register(newUser, password);
+      req.login(registeredUser, (err) => {
+        if (err) {
+          return next(err);
+        }
+        req.flash("success", "user was registered");
+        res.redirect("/home");
+      });
     } catch (e) {
       req.flash("error", e.message);
       res.redirect("/signup");
@@ -248,10 +300,10 @@ app.post(
     failureRedirect: "/login",
     failureFlash: true,
   }),
-  async (req, res) => {
+  wrapAsync(async (req, res) => {
     req.flash("success", "Welcome to Smart Pantry");
     res.redirect("/home");
-  }
+  })
 );
 
 app.get("/logout", (req, res, next) => {
