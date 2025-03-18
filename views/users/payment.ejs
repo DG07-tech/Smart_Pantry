@@ -1,226 +1,586 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Payment Box</title>
-  <!-- Font Awesome CDN -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</head>
-<body>
-<style>
-  body {
-    font-family: 'Arial', sans-serif;
-    background-color: #121212; /* Dark background */
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pantry Subscription Payment</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* Reset & Global */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        background: #f0f2f5;
+        color: #333;
+        line-height: 1.6;
+        padding: 20px;
+      }
+      .container {
+        max-width: 700px;
+        margin: 0 auto;
+        background: #fff;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+      }
+      h1,
+      h2 {
+        text-align: center;
+        margin-bottom: 25px;
+        color: #1a3b5d;
+      }
+      h1 {
+        font-size: 28px;
+        font-weight: 600;
+      }
+      h2 {
+        font-size: 20px;
+        margin: 25px 0 15px;
+        position: relative;
+        padding-bottom: 10px;
+      }
+      h2::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 50px;
+        height: 3px;
+        background: #3498db;
+        border-radius: 2px;
+      }
+      /* Plan Options */
+      .plan-options {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+        margin-bottom: 30px;
+      }
+      .plan {
+        flex: 1;
+        min-width: 180px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        text-align: center;
+        cursor: pointer;
+        transition: transform 0.3s, background-color 0.3s;
+      }
+      .plan.selected {
+        border-color: #3498db;
+        background: #ebf5fb;
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(52, 152, 219, 0.15);
+      }
+      .plan-title {
+        font-weight: bold;
+        margin-bottom: 10px;
+        font-size: 18px;
+      }
+      .plan-price {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+      .plan-billing {
+        font-size: 14px;
+        color: #7f8c8d;
+      }
+      /* Form Elements */
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+      }
+      input,
+      select {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 15px;
+        transition: border 0.3s;
+      }
+      input:focus,
+      select:focus {
+        border-color: #3498db;
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+      }
+      .form-group {
+        margin-bottom: 20px;
+      }
+      /* Payment Methods */
+      .payment-methods {
+        margin-bottom: 30px;
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+      .payment-tab {
+        display: flex;
+        border-bottom: 1px solid #e0e0e0;
+        background: #f9f9f9;
+      }
+      .payment-tab-item {
+        flex: 1;
+        text-align: center;
+        padding: 15px;
+        cursor: pointer;
+        border-bottom: 3px solid transparent;
+        font-weight: 500;
+        transition: background 0.3s;
+      }
+      .payment-tab-item:hover {
+        background: #f0f0f0;
+      }
+      .payment-tab-item.active {
+        background: #fff;
+        border-bottom-color: #3498db;
+      }
+      .payment-content {
+        padding: 20px;
+      }
+      .payment-content > div {
+        display: none;
+      }
+      .payment-content > div.active {
+        display: block;
+      }
+      .payment-option {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        margin-bottom: 12px;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.2s;
+        background: #fff;
+      }
+      .payment-option:hover {
+        background: #f9f9f9;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+      }
+      .payment-option.selected {
+        border-color: #3498db;
+        background: #ebf5fb;
+        box-shadow: 0 4px 10px rgba(52, 152, 219, 0.15);
+      }
+      .payment-option-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: #f0f2f5;
+        margin-right: 15px;
+        font-size: 18px;
+        color: #3498db;
+      }
+      .upi-input {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin-top: 15px;
+      }
+      .bank-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+      @media (max-width: 600px) {
+        .bank-grid {
+          grid-template-columns: 1fr;
+        }
+        .plan-options {
+          flex-direction: column;
+        }
+        .payment-tab {
+          flex-wrap: wrap;
+        }
+        .payment-tab-item {
+          flex-basis: 50%;
+        }
+      }
+      /* Button & Secure Note */
+      button {
+        background: #3498db;
+        color: #fff;
+        border: none;
+        padding: 14px;
+        width: 100%;
+        border-radius: 6px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background 0.3s, transform 0.2s;
+        font-weight: 500;
+        box-shadow: 0 3px 10px rgba(52, 152, 219, 0.2);
+      }
+      button:hover {
+        background: #2980b9;
+        transform: translateY(-2px);
+      }
+      button:active {
+        transform: translateY(1px);
+      }
+      .secure-note {
+        text-align: center;
+        margin-top: 25px;
+        color: #7f8c8d;
+        font-size: 14px;
+        border-top: 1px solid #eee;
+        padding-top: 15px;
+      }
+      .input-icon {
+        margin-right: 8px;
+        color: #3498db;
+      }
+      .card-row {
+        display: flex;
+        gap: 15px;
+      }
+      .card-row > div {
+        flex: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="container">
+      <h1><i class="fas fa-shopping-basket"></i> Pantry Subscription</h1>
 
-  .payment-box {
-    background: #1e1e2e; /* Darker box color */
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-    width: 90%;
-    max-width: 400px;
-    text-align: center;
-    padding: 20px;
-    color: #ffffff;
-  }
+      <section class="plans-container">
+        <h2>Choose Your Plan</h2>
+        <div class="plan-options">
+          <div class="plan" onclick="selectPlan(this)">
+            <div class="plan-title">Basic Plan</div>
+            <div class="plan-price">
+              <span class="currency-symbol">₹</span>99<span class="plan-billing"
+                >/month</span
+              >
+            </div>
+          </div>
+          <div class="plan selected" onclick="selectPlan(this)">
+            <div class="plan-title">Standard Plan</div>
+            <div class="plan-price">
+              <span class="currency-symbol">₹</span>499<span
+                class="plan-billing"
+                >/month</span
+              >
+            </div>
+          </div>
+          <div class="plan" onclick="selectPlan(this)">
+            <div class="plan-title">Premium Plan</div>
+            <div class="plan-price">
+              <span class="currency-symbol">₹</span>999<span
+                class="plan-billing"
+                >/month</span
+              >
+            </div>
+          </div>
+        </div>
+      </section>
 
-  .payment-box h2 {
-    margin-bottom: 20px;
-    color: #e5e5e5;
-  }
+      <form id="payment-form">
+        <div class="form-group">
+          <label for="email"
+            ><i class="fas fa-envelope input-icon"></i>Email Address</label
+          >
+          <input
+            type="email"
+            id="email"
+            required
+            placeholder="your@email.com"
+          />
+        </div>
 
-  .payment-options {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    gap: 15px;
-  }
+        <section class="payment-methods">
+          <h2>Select Payment Method</h2>
+          <div class="payment-tab">
+            <div
+              class="payment-tab-item active"
+              onclick="showPaymentMethod(event, 'card-payment')"
+            >
+              <i class="fas fa-credit-card"></i> Card
+            </div>
+            <div
+              class="payment-tab-item"
+              onclick="showPaymentMethod(event, 'upi-payment')"
+            >
+              <i class="fas fa-mobile-alt"></i> UPI
+            </div>
+            <div
+              class="payment-tab-item"
+              onclick="showPaymentMethod(event, 'netbanking-payment')"
+            >
+              <i class="fas fa-university"></i> Net Banking
+            </div>
+            <div
+              class="payment-tab-item"
+              onclick="showPaymentMethod(event, 'wallet-payment')"
+            >
+              <i class="fas fa-wallet"></i> Wallets
+            </div>
+          </div>
 
-  .payment-option {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 80px;
-    text-align: center;
-  }
+          <div class="payment-content">
+            <!-- Card Payment -->
+            <div id="card-payment" class="active">
+              <div class="card-details">
+                <label
+                  ><i class="fas fa-credit-card input-icon"></i>Card
+                  Information</label
+                >
+                <input type="text" placeholder="Card Number" required />
+                <div class="card-row">
+                  <div>
+                    <input type="text" placeholder="MM/YY" required />
+                  </div>
+                  <div>
+                    <input type="text" placeholder="CVC" required />
+                  </div>
+                </div>
+                <label for="name"
+                  ><i class="fas fa-user input-icon"></i>Cardholder Name</label
+                >
+                <input
+                  type="text"
+                  id="name"
+                  required
+                  placeholder="Name on card"
+                />
+              </div>
+            </div>
 
-  .payment-option img {
-    margin-top: 20px;
-    width: 100%; /* Ensure flexibility */
-    max-width: 60px; /* Max size */
-    height: auto; /* Maintain aspect ratio */
-    margin-bottom: 10px;
-    border-radius: 8px;
-  }
-  .payment-option svg {
-    width: 100%; /* Ensure flexibility */
-    max-width: 60px; /* Max size */
-    height: auto; /* Maintain aspect ratio */
-    border-radius: 8px;
-  }
+            <!-- UPI Payment -->
+            <div id="upi-payment">
+              <div
+                class="payment-option selected"
+                onclick="selectPaymentOption(event, this)"
+              >
+                <div class="payment-option-icon">
+                  <i class="fas fa-qrcode"></i>
+                </div>
+                <div class="payment-option-text">Scan QR Code</div>
+              </div>
+              <div
+                class="payment-option"
+                onclick="selectPaymentOption(event, this)"
+              >
+                <div class="payment-option-icon"><i class="fas fa-at"></i></div>
+                <div class="payment-option-text">Enter UPI ID</div>
+              </div>
+              <div class="upi-input">
+                <input type="text" placeholder="yourname@upi" required />
+                <button type="button">Verify</button>
+              </div>
+            </div>
 
-  .payment-option p {
-    font-size: 14px;
-    color: #cfcfcf;
-  }
+            <!-- Net Banking Payment -->
+            <div id="netbanking-payment">
+              <div class="bank-grid">
+                <div
+                  class="payment-option"
+                  onclick="selectPaymentOption(event, this)"
+                >
+                  <div class="payment-option-icon">
+                    <i class="fas fa-university"></i>
+                  </div>
+                  <div class="payment-option-text">HDFC Bank</div>
+                </div>
+                <div
+                  class="payment-option"
+                  onclick="selectPaymentOption(event, this)"
+                >
+                  <div class="payment-option-icon">
+                    <i class="fas fa-university"></i>
+                  </div>
+                  <div class="payment-option-text">SBI Bank</div>
+                </div>
+                <div
+                  class="payment-option"
+                  onclick="selectPaymentOption(event, this)"
+                >
+                  <div class="payment-option-icon">
+                    <i class="fas fa-university"></i>
+                  </div>
+                  <div class="payment-option-text">ICICI Bank</div>
+                </div>
+                <div
+                  class="payment-option"
+                  onclick="selectPaymentOption(event, this)"
+                >
+                  <div class="payment-option-icon">
+                    <i class="fas fa-university"></i>
+                  </div>
+                  <div class="payment-option-text">Axis Bank</div>
+                </div>
+              </div>
+              <select class="bank-select" required>
+                <option value="">Other Banks</option>
+                <option value="kotak">Kotak Mahindra Bank</option>
+                <option value="yes">Yes Bank</option>
+                <option value="pnb">Punjab National Bank</option>
+                <option value="bob">Bank of Baroda</option>
+                <option value="union">Union Bank</option>
+              </select>
+            </div>
 
-  .pay-now {
-    background-color: #4caf50;
-    color: #ffffff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    margin-top: 20px;
-    width: 100%;
-  }
+            <!-- Wallet Payment -->
+            <div id="wallet-payment">
+              <div
+                class="payment-option"
+                onclick="selectPaymentOption(event, this)"
+              >
+                <div class="payment-option-icon">
+                  <i class="fab fa-google-pay"></i>
+                </div>
+                <div class="payment-option-text">Google Pay</div>
+              </div>
+              <div class="payment-option" onclick="selectPaymentOption(this)">
+                <div class="payment-option-icon">
+                  <svg
+                    viewBox="0 0 512 512"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    stroke-linejoin="round"
+                    stroke-miterlimit="2"
+                  >
+                    <circle
+                      cx="-25.926"
+                      cy="41.954"
+                      r="29.873"
+                      fill="#5f259f"
+                      transform="rotate(-76.714 -48.435 5.641) scale(8.56802)"
+                    />
+                    <path
+                      d="M372.164 189.203c0-10.008-8.576-18.593-18.584-18.593h-34.323l-78.638-90.084c-7.154-8.577-18.592-11.439-30.03-8.577l-27.17 8.577c-4.292 1.43-5.723 7.154-2.862 10.007l85.8 81.508H136.236c-4.293 0-7.154 2.861-7.154 7.154v14.292c0 10.016 8.585 18.592 18.592 18.592h20.015v68.639c0 51.476 27.17 81.499 72.931 81.499 14.292 0 25.739-1.431 40.03-7.146v45.753c0 12.87 10.016 22.886 22.885 22.886h20.015c4.293 0 8.577-4.293 8.577-8.586V210.648h32.893c4.292 0 7.145-2.861 7.145-7.145v-14.3zM280.65 312.17c-8.576 4.292-20.015 5.723-28.591 5.723-22.886 0-34.324-11.438-34.324-37.176v-68.639h62.915v100.092z"
+                      fill="#fff"
+                      fill-rule="nonzero"
+                    />
+                  </svg>
+                </div>
+                <div class="payment-option-text">PhonePe</div>
+              </div>
 
-  .pay-now:hover {
-    background-color: #45a049;
-  }
+              <div class="payment-option" onclick="selectPaymentOption(this)">
+                <div class="payment-option-icon">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    x="0px"
+                    y="0px"
+                    width="100"
+                    height="100"
+                    viewBox="0 0 48 48"
+                  >
+                    <path
+                      fill="#0d47a1"
+                      d="M5.446 18.01H.548c-.277 0-.502.167-.503.502L0 30.519c-.001.3.196.45.465.45.735 0 1.335 0 2.07 0C2.79 30.969 3 30.844 3 30.594 3 29.483 3 28.111 3 27l2.126.009c1.399-.092 2.335-.742 2.725-2.052.117-.393.14-.733.14-1.137l.11-2.862C7.999 18.946 6.949 18.181 5.446 18.01zM4.995 23.465C4.995 23.759 4.754 24 4.461 24H3v-3h1.461c.293 0 .534.24.534.535V23.465zM13.938 18h-3.423c-.26 0-.483.08-.483.351 0 .706 0 1.495 0 2.201C10.06 20.846 10.263 21 10.552 21h2.855c.594 0 .532.972 0 1H11.84C10.101 22 9 23.562 9 25.137c0 .42.005 1.406 0 1.863-.008.651-.014 1.311.112 1.899C9.336 29.939 10.235 31 11.597 31h4.228c.541 0 1.173-.474 1.173-1.101v-8.274C17.026 19.443 15.942 18.117 13.938 18zM14 27.55c0 .248-.202.45-.448.45h-1.105C12.201 28 12 27.798 12 27.55v-2.101C12 25.202 12.201 25 12.447 25h1.105C13.798 25 14 25.202 14 25.449V27.55zM18 18.594v5.608c.124 1.6 1.608 2.798 3.171 2.798h1.414c.597 0 .561.969 0 .969H19.49c-.339 0-.462.177-.462.476v2.152c0 .226.183.396.422.396h2.959c2.416 0 3.592-1.159 3.591-3.757v-8.84c0-.276-.175-.383-.342-.383h-2.302c-.224 0-.355.243-.355.422v5.218c0 .199-.111.316-.29.316H21.41c-.264 0-.409-.143-.409-.396v-5.058C21 18.218 20.88 18 20.552 18c-.778 0-1.442 0-2.22 0C18.067 18 18 18.263 18 18.594L18 18.594z"
+                    ></path>
+                    <path
+                      fill="#00adee"
+                      d="M27.038 20.569v-2.138c0-.237.194-.431.43-.431H28c1.368-.285 1.851-.62 2.688-1.522.514-.557.966-.704 1.298-.113L32 18h1.569C33.807 18 34 18.194 34 18.431v2.138C34 20.805 33.806 21 33.569 21H32v9.569C32 30.807 31.806 31 31.57 31h-2.14C29.193 31 29 30.807 29 30.569V21h-1.531C27.234 21 27.038 20.806 27.038 20.569L27.038 20.569zM42.991 30.465c0 .294-.244.535-.539.535h-1.91c-.297 0-.54-.241-.54-.535v-6.623-1.871c0-1.284-2.002-1.284-2.002 0v8.494C38 30.759 37.758 31 37.461 31H35.54C35.243 31 35 30.759 35 30.465V18.537C35 18.241 35.243 18 35.54 18h1.976c.297 0 .539.241.539.537v.292c1.32-1.266 3.302-.973 4.416.228 2.097-2.405 5.69-.262 5.523 2.375 0 2.916-.026 6.093-.026 9.033 0 .294-.244.535-.538.535h-1.891C45.242 31 45 30.759 45 30.465c0-2.786 0-5.701 0-8.44 0-1.307-2-1.37-2 0v8.44H42.991z"
+                    ></path>
+                  </svg>
+                </div>
+                <div class="payment-option-text">Paytm</div>
+              </div>
+              <div
+                class="payment-option"
+                onclick="selectPaymentOption(event, this)"
+              >
+                <div class="payment-option-icon">
+                  <i class="fab fa-amazon-pay"></i>
+                </div>
+                <div class="payment-option-text">Amazon Pay</div>
+              </div>
+            </div>
+          </div>
+        </section>
 
-  .separator {
-    display: flex;
-    align-items: center;
-    margin: 20px 0;
-  }
+        <div class="form-group">
+          <label for="country"
+            ><i class="fas fa-globe input-icon"></i>Country</label
+          >
+          <select id="country" required>
+            <option value="">Select Country</option>
+            <option value="in" selected>India</option>
+            <option value="us">United States</option>
+            <option value="ca">Canada</option>
+            <option value="uk">United Kingdom</option>
+            <option value="au">Australia</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
 
-  .separator .line {
-    flex: 1;
-    height: 1px;
-    background-color: #444444;
-    margin: 0 10px;
-  }
+        <button type="submit">
+          <i class="fas fa-lock"></i> Complete Payment
+        </button>
 
-  .separator p {
-    color: #cfcfcf;
-    font-size: 14px;
-    margin: 0;
-  }
+        <div class="secure-note">
+          <i class="fas fa-shield-alt"></i>
+          Your payment information is secure and encrypted.
+          <p>By completing this payment, you agree to our Terms & Conditions</p>
+        </div>
+      </form>
+    </main>
 
-  .credit-card-info--form {
-    text-align: left;
-    margin-top: 15px;
-  }
+    <script>
+      // Toggle plan selection
+      function selectPlan(element) {
+        document
+          .querySelectorAll(".plan")
+          .forEach((plan) => plan.classList.remove("selected"));
+        element.classList.add("selected");
+      }
 
-  .input_container {
-    margin-bottom: 15px;
-  }
+      // Switch payment method tabs
+      function showPaymentMethod(event, methodId) {
+        document
+          .querySelectorAll(".payment-content > div")
+          .forEach((div) => div.classList.remove("active"));
+        document.getElementById(methodId).classList.add("active");
+        document
+          .querySelectorAll(".payment-tab-item")
+          .forEach((tab) => tab.classList.remove("active"));
+        event.currentTarget.classList.add("active");
+      }
 
-  .input_label {
-    display: block;
-    font-size: 14px;
-    color: #e5e5e5;
-    margin-bottom: 5px;
-  }
+      // Highlight selected payment option
+      function selectPaymentOption(event, element) {
+        const container = element.closest(".payment-content > div");
+        container
+          .querySelectorAll(".payment-option")
+          .forEach((option) => option.classList.remove("selected"));
+        element.classList.add("selected");
+      }
 
-  .input_field {
-    width: 100%;
-    padding: 10px;
-    font-size: 14px;
-    border: 1px solid #444444;
-    border-radius: 5px;
-    background-color: #2a2a3c;
-    color: #ffffff;
-    box-sizing: border-box;
-  }
-
-  .input_field:focus {
-    outline: none;
-    border-color: #4caf50;
-    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
-  }
-
-  .split {
-    display: flex;
-    gap: 10px;
-  }
-
-  .split .input_field {
-    width: calc(50% - 5px);
-  }
-
-  .purchase--btn {
-    background-color: #4caf50;
-    color: #ffffff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    display: block;
-    margin: 20px auto 0;
-    width: 100%;
-    text-align: center;
-  }
-
-  .purchase--btn:hover {
-    background-color: #45a049;
-  }
-
-  @media (max-width: 480px) {
-    .payment-options {
-      gap: 10px;
-    }
-
-    .payment-option {
-      width: 70px;
-    }
-
-    .payment-option img {
-      max-width: 50px;
-    }
-  }
-</style>
-<div class="payment-box">
-  <h2>Choose Your Payment Method</h2>
-  <div class="payment-options">
-    <div class="payment-option">
-      <a href=><img src="https://pay.google.com/about/static_kcs/images/logos/google-pay-logo.svg" alt="Google Pay"></a>
-      <p>Google Pay</p>
-    </div>
-    <div class="payment-option">
-      <a href=""><svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 48 48">
-        <path fill="#0d47a1" d="M5.446 18.01H.548c-.277 0-.502.167-.503.502L0 30.519c-.001.3.196.45.465.45.735 0 1.335 0 2.07 0C2.79 30.969 3 30.844 3 30.594 3 29.483 3 28.111 3 27l2.126.009c1.399-.092 2.335-.742 2.725-2.052.117-.393.14-.733.14-1.137l.11-2.862C7.999 18.946 6.949 18.181 5.446 18.01zM4.995 23.465C4.995 23.759 4.754 24 4.461 24H3v-3h1.461c.293 0 .534.24.534.535V23.465zM13.938 18h-3.423c-.26 0-.483.08-.483.351 0 .706 0 1.495 0 2.201C10.06 20.846 10.263 21 10.552 21h2.855c.594 0 .532.972 0 1H11.84C10.101 22 9 23.562 9 25.137c0 .42.005 1.406 0 1.863-.008.651-.014 1.311.112 1.899C9.336 29.939 10.235 31 11.597 31h4.228c.541 0 1.173-.474 1.173-1.101v-8.274C17.026 19.443 15.942 18.117 13.938 18zM14 27.55c0 .248-.202.45-.448.45h-1.105C12.201 28 12 27.798 12 27.55v-2.101C12 25.202 12.201 25 12.447 25h1.105C13.798 25 14 25.202 14 25.449V27.55zM18 18.594v5.608c.124 1.6 1.608 2.798 3.171 2.798h1.414c.597 0 .561.969 0 .969H19.49c-.339 0-.462.177-.462.476v2.152c0 .226.183.396.422.396h2.959c2.416 0 3.592-1.159 3.591-3.757v-8.84c0-.276-.175-.383-.342-.383h-2.302c-.224 0-.355.243-.355.422v5.218c0 .199-.111.316-.29.316H21.41c-.264 0-.409-.143-.409-.396v-5.058C21 18.218 20.88 18 20.552 18c-.778 0-1.442 0-2.22 0C18.067 18 18 18.263 18 18.594L18 18.594z"></path><path fill="#00adee" d="M27.038 20.569v-2.138c0-.237.194-.431.43-.431H28c1.368-.285 1.851-.62 2.688-1.522.514-.557.966-.704 1.298-.113L32 18h1.569C33.807 18 34 18.194 34 18.431v2.138C34 20.805 33.806 21 33.569 21H32v9.569C32 30.807 31.806 31 31.57 31h-2.14C29.193 31 29 30.807 29 30.569V21h-1.531C27.234 21 27.038 20.806 27.038 20.569L27.038 20.569zM42.991 30.465c0 .294-.244.535-.539.535h-1.91c-.297 0-.54-.241-.54-.535v-6.623-1.871c0-1.284-2.002-1.284-2.002 0v8.494C38 30.759 37.758 31 37.461 31H35.54C35.243 31 35 30.759 35 30.465V18.537C35 18.241 35.243 18 35.54 18h1.976c.297 0 .539.241.539.537v.292c1.32-1.266 3.302-.973 4.416.228 2.097-2.405 5.69-.262 5.523 2.375 0 2.916-.026 6.093-.026 9.033 0 .294-.244.535-.538.535h-1.891C45.242 31 45 30.759 45 30.465c0-2.786 0-5.701 0-8.44 0-1.307-2-1.37-2 0v8.44H42.991z"></path>
-        </svg></a>
-      <p>Paytm</p>
-    </div>
-    <div class="payment-option">
-      <a href=""><img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Debit Card"></a>
-      <p>Debit Card</p>
-    </div>
-  </div>
-  <div class="separator">
-    <hr class="line">
-    <p>or pay using credit card</p>
-    <hr class="line">
-  </div>
-  <div class="credit-card-info--form">
-    <div class="input_container">
-      <label for="card_holder_name" class="input_label">Card holder full name</label>
-      <input id="card_holder_name" class="input_field" type="text" name="card-holder-name" placeholder="Enter your full name">
-    </div>
-    <div class="input_container">
-      <label for="card_number" class="input_label">Card Number</label>
-      <input id="card_number" class="input_field" type="number" name="card-number" placeholder="0000 0000 0000 0000">
-    </div>
-    <div class="input_container">
-      <label class="input_label">Expiry Date / CVV</label>
-      <div class="split">
-        <input class="input_field" type="text" name="expiry-date" placeholder="MM/YY">
-        <input class="input_field" type="number" name="cvv" placeholder="CVV">
-      </div>
-    </div>
-  </div>
-  <button class="purchase--btn">Checkout</button>
-</div>
-</body>
+      // Form submission handling (demo only)
+      document
+        .getElementById("payment-form")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          alert("Payment processing would happen here. This is just a demo.");
+        });
+    </script>
+  </body>
 </html>

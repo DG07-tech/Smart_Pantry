@@ -1,0 +1,320 @@
+<% layout("/layouts/dashboard") %>
+<style>
+  .custom-card {
+    border-radius: 0.75rem;
+    overflow: hidden;
+    transition: all 0.2s ease;
+  }
+
+  .custom-card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+  }
+
+  .card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 1.25rem 1.5rem;
+  }
+
+  .card-header h4 {
+    font-weight: 600;
+    color: #2c3e50;
+  }
+
+  .card-header-icon {
+    background-color: rgba(13, 110, 253, 0.1);
+    color: #0d6efd;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    margin-right: 0.75rem;
+  }
+
+  .form-group {
+    margin-bottom: 1.25rem;
+  }
+
+  .form-label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: #495057;
+  }
+
+  .input-group-text {
+    background-color: #f8f9fa;
+    border-right: 0;
+    color: #6c757d;
+  }
+
+  .form-control,
+  .form-select {
+    border-left: 0;
+    padding: 0.6rem 0.75rem;
+  }
+
+  .form-control:focus,
+  .form-select:focus {
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    border-color: #86b7fe;
+    border-left: 0;
+  }
+
+  .input-group:focus-within .input-group-text {
+    border-color: #86b7fe;
+  }
+
+  .btn {
+    padding: 0.6rem 1.25rem;
+    font-weight: 500;
+    border-radius: 0.375rem;
+  }
+
+  .btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+  }
+
+  .btn-primary:hover {
+    background-color: #0b5ed7;
+    border-color: #0a58ca;
+  }
+
+  .expiry-feedback {
+    display: none;
+    margin-top: 0.25rem;
+    font-size: 0.875em;
+    color: #dc3545;
+  }
+
+  /* Category pills */
+  .category-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .category-pill {
+    font-size: 0.8rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 50px;
+    background-color: #e9ecef;
+    color: #495057;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+  }
+
+  .category-pill:hover,
+  .category-pill.active {
+    background-color: rgba(13, 110, 253, 0.1);
+    color: #0d6efd;
+    border-color: #0d6efd;
+  }
+
+  @media (max-width: 576px) {
+    .card-body {
+      padding: 1.25rem;
+    }
+
+    .btn {
+      width: 100%;
+      margin-top: 0.5rem;
+    }
+
+    .d-flex.justify-content-end {
+      flex-direction: column-reverse;
+    }
+  }
+</style>
+
+<section class="py-4 py-md-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card shadow-sm border-0 custom-card">
+          <div class="card-header py-3">
+            <div class="d-flex align-items-center">
+              <div class="card-header-icon">
+                <i class="fa-solid fa-box-open"></i>
+              </div>
+              <div>
+                <h4 class="mb-0">Add New Item</h4>
+                <p class="text-muted mb-0 small">
+                  Add a new item to your pantry inventory
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-body p-4">
+            <form
+              id="addItemForm"
+              novalidate
+              class="needs-validation"
+              action="/dashboard/addinventory"
+              method="POST"
+            >
+              <!-- Item Name -->
+              <div class="form-group">
+                <label for="itemName" class="form-label">Item Name</label>
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                  </span>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="itemName"
+                    name="inventory[itemName]"
+                    placeholder="Enter item name"
+                    required
+                  />
+                </div>
+                <div class="invalid-feedback">Please provide an item name.</div>
+              </div>
+
+              <!-- Category -->
+              <div class="form-group">
+                <label for="category" class="form-label">Category</label>
+
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="fa-solid fa-list-ul"></i>
+                  </span>
+                  <select
+                    class="form-select"
+                    id="category"
+                    name="inventory[category]"
+                    required
+                  >
+                    <option value="" disabled selected>Select category</option>
+                    <option value="Grains">Grains</option>
+                    <option value="Legumes">Legumes</option>
+                    <option value="Canned Goods">Canned Goods</option>
+                    <option value="Dairy">Dairy</option>
+                    <option value="Vegetables">Vegetables</option>
+                    <option value="Fruits">Fruits</option>
+                    <option value="Beverages">Beverages</option>
+                    <option value="Snacks">Snacks</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <div class="invalid-feedback">Please select a category.</div>
+              </div>
+
+              <div class="row">
+                <!-- Quantity -->
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="quantity" class="form-label">Quantity</label>
+                    <div class="input-group">
+                      <span class="input-group-text">
+                        <i class="fas fa-sort-amount-up"></i>
+                      </span>
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="quantity"
+                        min="0"
+                        step="1"
+                        name="inventory[quantity]"
+                        placeholder="Enter quantity"
+                        required
+                      />
+                      <select
+                        class="form-select"
+                        id="unit"
+                        name="inventory[unit]"
+                        style="max-width: 120px; border-left: 1px solid #ced4da"
+                        required
+                      >
+                        <option value="" disabled selected>Unit</option>
+                        <option value="kg">Kg</option>
+                        <option value="g">g</option>
+                        <option value="liter">Liter</option>
+                        <option value="ml">ml</option>
+                        <option value="pieces">pieces</option>
+                      </select>
+                    </div>
+                    <div class="invalid-feedback">
+                      Please enter a valid quantity and unit.
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Expiry Date -->
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="expiryDate" class="form-label"
+                      >Expiry Date</label
+                    >
+                    <div class="input-group">
+                      <span class="input-group-text">
+                        <i class="fa-solid fa-calendar-days"></i>
+                      </span>
+                      <input
+                        type="date"
+                        class="form-control"
+                        id="expiryDate"
+                        name="inventory[expiryDate]"
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Buttons -->
+              <div class="d-flex flex-wrap justify-content-end gap-2 mt-4">
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  id="cancelButton"
+                >
+                  <i class="fa-solid fa-xmark me-2"></i>Cancel
+                </button>
+                <button type="submit" class="btn btn-primary" id="submitButton">
+                  <i class="fa-solid fa-plus me-2"></i>Add Item
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("addItemForm");
+
+    // Validate expiry date
+    form.addEventListener("submit", function (event) {
+      const expiryDateInput = document.querySelector(
+        'input[name="expiryDate"]'
+      );
+      const expiryDate = new Date(expiryDateInput.value);
+      const today = new Date();
+
+      // Remove time from the comparison
+      today.setHours(0, 0, 0, 0);
+
+      if (expiryDate < today) {
+        alert("Expiry date must be today or a future date.");
+        event.preventDefault(); // Prevent form submission
+      }
+    });
+
+    // Cancel button redirection
+    document
+      .getElementById("cancelButton")
+      .addEventListener("click", function (event) {
+        event.preventDefault(); // Prevent form submission
+        window.location.href = "/dashboard/inventory";
+      });
+  });
+</script>

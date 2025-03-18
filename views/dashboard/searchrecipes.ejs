@@ -1,0 +1,243 @@
+<% layout("/layouts/dashboard") %>
+<style>
+  .recipe-card {
+    height: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .card-img-top {
+    height: 200px;
+    object-fit: cover;
+  }
+  .search-container {
+    background-color: #ffffff;
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  }
+  .loading {
+    display: none;
+    text-align: center;
+    padding: 20px;
+  }
+  .page-header {
+    background-color: #f8f9fa;
+    padding: 40px 0 50px;
+    margin-bottom: -30px;
+    text-align: center;
+  }
+  .recipe-stats {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    gap: 15px;
+  }
+  .recipe-stat {
+    display: flex;
+    align-items: center;
+    font-size: 0.85rem;
+    color: #6c757d;
+  }
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  }
+  .btn-shopping-list {
+    display: block;
+    text-align: center;
+    padding: 8px 0;
+    text-decoration: none;
+    color: #5e6e82;
+    transition: all 0.2s;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    margin-top: 10px;
+  }
+  .btn-shopping-list:hover {
+    background-color: #f8f9fa;
+    color: #4361ee;
+  }
+</style>
+
+<div class="page-header">
+  <div class="container">
+    <h1 class="mb-2">Find Your Perfect Recipe</h1>
+    <p class="text-muted">Discover thousands of recipes to cook at home</p>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <div class="search-container">
+        <form action="/dashboard/recipesearch" method="GET" id="searchForm">
+          <div class="row g-3 mb-3">
+            <div class="col-md-8">
+              <div class="input-group">
+                <span class="input-group-text bg-white border-end-0">
+                  <i class="fas fa-search text-muted"></i>
+                </span>
+                <input
+                  type="text"
+                  class="form-control border-start-0"
+                  id="query"
+                  name="query"
+                  placeholder="Search recipes like 'pasta', 'chicken curry', 'chocolate cake'..."
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <button type="submit" class="btn btn-primary h-100 w-100">
+                Find Recipes
+              </button>
+            </div>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label for="diet" class="form-label mb-1">Diet</label>
+              <select class="form-select" id="diet" name="diet">
+                <option value="">Any Diet</option>
+                <option value="vegetarian">Vegetarian</option>
+                <option value="vegan">Vegan</option>
+                <option value="glutenfree">Gluten Free</option>
+                <option value="ketogenic">Ketogenic</option>
+                <option value="paleo">Paleo</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label for="cuisine" class="form-label mb-1">Cuisine</label>
+              <select class="form-select" id="cuisine" name="cuisine">
+                <option value="">Any Cuisine</option>
+                <option value="italian">Italian</option>
+                <option value="mexican">Mexican</option>
+                <option value="asian">Asian</option>
+                <option value="french">French</option>
+                <option value="mediterranean">Mediterranean</option>
+                <option value="indian">Indian</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label for="type" class="form-label mb-1">Meal Type</label>
+              <select class="form-select" id="type" name="type">
+                <option value="">Any Type</option>
+                <option value="main course">Main Course</option>
+                <option value="side dish">Side Dish</option>
+                <option value="dessert">Dessert</option>
+                <option value="appetizer">Appetizer</option>
+                <option value="salad">Salad</option>
+                <option value="breakfast">Breakfast</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label for="maxReadyTime" class="form-label mb-1"
+                >Prep Time</label
+              >
+              <select class="form-select" id="maxReadyTime" name="maxReadyTime">
+                <option value="">Any Time</option>
+                <option value="15">15 minutes or less</option>
+                <option value="30">30 minutes or less</option>
+                <option value="60">1 hour or less</option>
+                <option value="120">2 hours or less</option>
+              </select>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div id="loading" class="loading">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2">Finding delicious recipes for you...</p>
+      </div>
+
+      <% if (recipes && recipes.length > 0) { %>
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="mb-0">Found <%= recipes.length %> Recipes</h4>
+      </div>
+
+      <div class="row row-cols-1 row-cols-md-3 g-4" id="recipesContainer">
+        <% for (const recipe of recipes) { %>
+        <div class="col">
+          <div class="card recipe-card h-100">
+            <img
+              src="<%= recipe.image %>"
+              class="card-img-top"
+              alt="<%= recipe.title %>"
+              loading="lazy"
+            />
+            <div class="card-body">
+              <h5 class="card-title"><%= recipe.title %></h5>
+              <div class="mb-3">
+                <% if (recipe.vegetarian) { %>
+                <span class="badge bg-success">Vegetarian</span>
+                <% } %> <% if (recipe.vegan) { %>
+                <span class="badge bg-success">Vegan</span>
+                <% } %> <% if (recipe.glutenFree) { %>
+                <span class="badge bg-warning text-dark">Gluten Free</span>
+                <% } %> <% if (recipe.dairyFree) { %>
+                <span class="badge bg-info text-dark">Dairy Free</span>
+                <% } %>
+              </div>
+              <div class="recipe-stats">
+                <div class="recipe-stat">
+                  <i class="fas fa-clock"></i> <%= recipe.readyInMinutes %> min
+                </div>
+                <div class="recipe-stat">
+                  <i class="fas fa-heart"></i> <%= recipe.healthScore %>%
+                  healthy
+                </div>
+              </div>
+            </div>
+            <div class="card-footer bg-transparent">
+              <a
+                href="https://spoonacular.com/recipes/<%= encodeURIComponent(recipe.title) %>-<%= recipe.id %>"
+                target="_blank"
+                class="btn btn-outline-primary w-100 mb-2"
+              >
+                <i class="fas fa-external-link-alt me-1"></i> View Recipe
+              </a>
+              <a
+                href="/dashboard/shopping/<%= userid %>/<%= recipe.id %>"
+                class="btn-shopping-list"
+              >
+                <i class="fas fa-shopping-basket me-1"></i> Generate Shopping
+                List
+              </a>
+            </div>
+          </div>
+        </div>
+        <% } %>
+      </div>
+      <% } else if (searched) { %>
+      <div class="empty-state mb-2">
+        <h4>No recipes found</h4>
+        <p class="text-muted mb-4">
+          We couldn't find any recipes matching your criteria.
+        </p>
+      </div>
+      <% } else { %>
+      <div class="empty-state mb-2">
+        <h4>Ready to cook something amazing?</h4>
+        <p class="text-muted mb-4">
+          Use the search box above to find recipes by name, ingredients, or
+          dietary preferences.
+        </p>
+      </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Show loading spinner when form submits
+  document.getElementById("searchForm").addEventListener("submit", function () {
+    document.getElementById("loading").style.display = "block";
+  });
+</script>
