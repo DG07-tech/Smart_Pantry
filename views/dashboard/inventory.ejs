@@ -1,0 +1,475 @@
+<% layout("/layouts/dashboard") %>
+<style>
+  /* Table styling */
+  .inventory-container {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+  }
+
+  .table {
+    margin-bottom: 0;
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  .table thead {
+    background-color: #f8f9fa;
+  }
+
+  .table th {
+    font-weight: 600;
+    color: #2b2d42;
+    border-top: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 1rem 1.25rem;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+
+  .table td {
+    vertical-align: middle;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    color: #5c6078;
+    font-size: 0.95rem;
+  }
+
+  .table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .table tbody tr:hover {
+    background-color: #f8fafc;
+  }
+
+  /* Category badge styling */
+  .category-badge {
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 0.35em 0.75em;
+    border-radius: 6px;
+    display: inline-block;
+    letter-spacing: 0.3px;
+    background-color: rgba(67, 97, 238, 0.1);
+    color: #4361ee;
+  }
+
+  .category-badge[data-category="Grains"] {
+    background-color: rgba(255, 209, 102, 0.15);
+    color: #e6b800;
+  }
+
+  .category-badge[data-category="Legumes"] {
+    background-color: rgba(86, 182, 72, 0.15);
+    color: #45a636;
+  }
+
+  .category-badge[data-category="Canned Goods"] {
+    background-color: rgba(108, 117, 125, 0.15);
+    color: #6c757d;
+  }
+
+  .category-badge[data-category="Dairy"] {
+    background-color: rgba(13, 110, 253, 0.15);
+    color: #0d6efd;
+  }
+
+  .category-badge[data-category="Vegetables"] {
+    background-color: rgba(6, 214, 160, 0.15);
+    color: #06d6a0;
+  }
+
+  .category-badge[data-category="Fruits"] {
+    background-color: rgba(239, 71, 111, 0.15);
+    color: #ef476f;
+  }
+
+  .category-badge[data-category="Beverages"] {
+    background-color: rgba(17, 138, 178, 0.15);
+    color: #118ab2;
+  }
+
+  .category-badge[data-category="Snacks"] {
+    background-color: rgba(255, 139, 0, 0.15);
+    color: #ff8b00;
+  }
+
+  .category-badge[data-category="Other"] {
+    background-color: rgba(73, 80, 87, 0.15);
+    color: #495057;
+  }
+
+  /* Quantity display */
+  .quantity-text {
+    font-size: 1rem;
+    color: #2b2d42;
+  }
+
+  .quantity-unit {
+    color: #2b2d42;
+    font-size: 1rem;
+  }
+
+  /* Expiry date styling */
+  .expiry-date {
+    white-space: nowrap;
+    font-weight: 500;
+  }
+
+  .expiry-warning {
+    color: #ffd166;
+  }
+
+  .expiry-danger {
+    color: #ef476f;
+  }
+
+  .expiry-safe {
+    color: #06d6a0;
+  }
+
+  .expiry-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 6px;
+  }
+
+  .indicator-warning {
+    background-color: #ffd166;
+  }
+
+  .indicator-danger {
+    background-color: #ef476f;
+  }
+
+  .indicator-safe {
+    background-color: #06d6a0;
+  }
+
+  /* Action buttons */
+  .action-btn {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+
+  .btn-edit {
+    background-color: rgba(67, 97, 238, 0.1);
+    color: #4361ee;
+  }
+
+  .btn-delete {
+    background-color: rgba(239, 71, 111, 0.1);
+    color: #ef476f;
+  }
+
+  .action-btn:hover {
+    transform: translateY(-2px);
+    filter: brightness(0.95);
+  }
+
+  .btn-edit:hover {
+    background-color: #4361ee;
+    color: white;
+  }
+
+  .btn-delete:hover {
+    background-color: #ef476f;
+    color: white;
+  }
+
+  /* Search & header styling */
+  .page-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .page-title {
+    font-weight: 600;
+    color: #2b2d42;
+    display: flex;
+    align-items: center;
+  }
+
+  .page-title i {
+    background-color: rgba(67, 97, 238, 0.1);
+    color: #4361ee;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.75rem;
+  }
+
+  .search-box {
+    max-width: 300px;
+    width: 100%;
+    position: relative;
+  }
+
+  .search-box .form-control {
+    border-radius: 10px;
+    padding-left: 40px;
+    padding-right: 15px;
+    height: 44px;
+    background-color: #f8f9fa;
+    border: 1px solid #f0f0f0;
+    transition: all 0.2s;
+  }
+
+  .search-box .form-control:focus {
+    background-color: #fff;
+    border-color: #4361ee;
+    box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #8d99ae;
+    z-index: 10;
+  }
+
+  .btn-add {
+    height: 44px;
+    padding: 0 1.25rem;
+    background-color: #4361ee;
+    border-color: #4361ee;
+    font-weight: 500;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.2s;
+  }
+
+  .btn-add:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(67, 97, 238, 0.2);
+    background-color: #4361ee;
+    border-color: #4361ee;
+  }
+
+  .btn-add i {
+    margin-right: 0.5rem;
+  }
+
+  /* Empty state */
+  .empty-state {
+    padding: 3rem 1rem;
+    text-align: center;
+  }
+
+  .empty-state-box {
+    font-size: 3rem;
+    color: #8d99ae;
+    margin-bottom: 1rem;
+  }
+
+  .empty-state h5 {
+    color: #2b2d42;
+    margin-bottom: 0.5rem;
+  }
+
+  .empty-state p {
+    color: #8d99ae;
+    max-width: 300px;
+    margin: 0 auto 1.5rem;
+  }
+
+  /* RESPONSIVE DESIGN */
+  @media (max-width: 768px) {
+    .inventory-container {
+      border-radius: 8px;
+    }
+
+    .table-responsive {
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+
+    .action-buttons {
+      display: flex;
+      flex-direction: row;
+      gap: 0.5rem;
+    }
+
+    .search-box {
+      max-width: 100%;
+      margin-bottom: 12px;
+    }
+
+    .btn-add {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .table td,
+    .table th {
+      padding: 0.75rem 1rem;
+    }
+
+    .page-title {
+      margin-bottom: 1rem;
+      justify-content: center;
+    }
+  }
+</style>
+
+<section class="py-4 py-md-5 inventory-table">
+  <div class="container">
+    <!-- Header with Title and Search -->
+    <div class="row mb-4 align-items-center page-header">
+      <div class="col-md-6 mb-3 mb-md-0">
+        <h4 class="page-title mb-0">
+          <i class="fa-solid fa-boxes-stacked"></i>
+          <span>Pantry Items</span>
+        </h4>
+      </div>
+      <div class="col-md-6">
+        <div
+          class="d-flex flex-column flex-md-row align-items-center justify-content-md-end gap-3"
+        >
+          <div class="search-box">
+            <i class="fa-solid fa-search search-icon"></i>
+            <input
+              type="text"
+              class="form-control"
+              id="searchInput"
+              placeholder="Search items..."
+            />
+          </div>
+          <a href="/dashboard/addinventory" class="btn btn-primary btn-add">
+            <i class="fa-solid fa-plus"></i>Add Item
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Inventory Table -->
+    <div class="inventory-container">
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Category</th>
+              <th>Quantity</th>
+              <th>Expiry Date</th>
+              <th class="text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (inventoryItems && inventoryItems.length > 0) { %> <% for (let
+            item of inventoryItems) { %>
+            <tr>
+              <td>
+                <span class="item-name"><%= item.itemName %></span>
+              </td>
+              <td>
+                <span
+                  class="category-badge"
+                  data-category="<%= item.category %>"
+                >
+                  <%= item.category %>
+                </span>
+              </td>
+              <td>
+                <span class="quantity-text"><%= item.quantity %></span>
+                <span class="quantity-unit"><%= item.unit %></span>
+              </td>
+              <td><%= moment(item.expiryDate).format("DD-MM-YYYY") %></td>
+              <td>
+                <div class="d-flex justify-content-center gap-2">
+                  <a
+                    href="/dashboard/inventory/<%= item._id %>/edit"
+                    class="action-btn btn-edit"
+                    title="Edit Item"
+                  >
+                    <i class="fa-solid fa-pen-to-square"></i>
+                  </a>
+                  <form
+                    action="/dashboard/inventory/delete/<%= item._id %>"
+                    method="POST"
+                    class="d-inline"
+                  >
+                    <button
+                      class="action-btn btn-delete"
+                      type="submit"
+                      title="Delete Item"
+                    >
+                      <i class="fa-solid fa-trash-alt"></i>
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+            <% } %> <% } else { %>
+            <tr>
+              <td colspan="5">
+                <div class="empty-state">
+                  <i class="fa-solid fa-box-open empty-state-box"></i>
+                  <h5>No items found</h5>
+                  <p>Your pantry is empty. Add some items to get started.</p>
+                  <a
+                    href="/dashboard/addinventory"
+                    class="btn btn-primary btn-add"
+                  >
+                    <i class="fa-solid fa-plus"></i>
+                    Add First Item
+                  </a>
+                </div>
+              </td>
+            </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Search functionality
+    const searchInput = document.getElementById("searchInput");
+    if (searchInput) {
+      searchInput.addEventListener("input", function () {
+        const searchTerm = this.value.toLowerCase();
+        const rows = document.querySelectorAll("tbody tr");
+
+        rows.forEach((row) => {
+          const itemName = row
+            .querySelector(".item-name")
+            .textContent.toLowerCase();
+          const category = row
+            .querySelector(".category-badge")
+            .textContent.toLowerCase();
+
+          if (itemName.includes(searchTerm) || category.includes(searchTerm)) {
+            row.style.display = "";
+          } else {
+            row.style.display = "none";
+          }
+        });
+      });
+    }
+  });
+</script>

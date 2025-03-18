@@ -15,10 +15,19 @@ const Inventory = require("./models/inventory.js");
 const wrapAsync = require("./utils/wrapAsync.js");
 const flash = require("connect-flash");
 const ExpressError = require("./utils/ExpressError.js");
-const { isLoggedIn, saveRedirectUrl } = require("./middleware.js");
+const {
+  isLoggedIn,
+  saveRedirectUrl,
+  isOwner,
+  validateInventory,
+  validateUser,
+} = require("./middleware.js");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const bodyParser = require("body-parser");
 const axios = require("axios");
+const moment = require("moment"); // date formating
+const methodOverride = require("method-override");
+const cron = require("node-cron");
 
 // MongoDB connection URL
 const MONGO_URL = "mongodb://127.0.0.1:27017/smartpantry";
@@ -41,6 +50,7 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: true }));
 app.engine("ejs", ejsMate);
+app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "/public")));
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -114,6 +124,26 @@ app.use((req, res, next) => {
   next();
 });
 
+// Function to delete expired items
+async function deleteExpiredItems() {
+  try {
+    const result = await Inventory.deleteMany({
+      expiryDate: { $lt: new Date() },
+    });
+    console.log(
+      `Deleted ${result.deletedCount} expired pantry items for all users.`
+    );
+  } catch (err) {
+    console.error("Error deleting expired items:", err);
+  }
+}
+
+// Run cleanup on server startup
+deleteExpiredItems();
+
+// Schedule cron job to run daily at midnight to delte expire iteam
+cron.schedule("0 0 * * *", deleteExpiredItems);
+
 // Home routes
 app.get("/home", (req, res) => {
   res.render("pages/index.ejs");
@@ -132,136 +162,243 @@ app.get("/contactus", (req, res) => {
 app.get("/features", (req, res) => {
   res.render("pages/features.ejs");
 });
-app.get("/inventory", isLoggedIn, (req, res) => {
-  res.render("users/inventory.ejs");
-});
 
-app.get("/payment", isLoggedIn, (req, res) => {
+app.get("/payment", (req, res) => {
   res.render("users/payment.ejs");
 });
-app.get("/viewinventory", isLoggedIn, (req, res) => {
-  res.render("users/viewinventory.ejs");
-});
 
-//*************************************************************************** */
-
-// Notification route
+// Dashboard route
 app.get(
-  "/notification",
+  "/dashboard",
   isLoggedIn,
   wrapAsync(async (req, res) => {
-    try {
-      const today = new Date();
-      const upcomingExpiry = await Inventory.find({
-        expiryDate: {
-          $lte: new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000),
-        },
-        owner: req.user._id,
-      });
-      res.render("users/notification.ejs", { upcomingExpiry });
-    } catch (err) {
-      console.error(err);
-      req.flash("error", "Unable to fetch notifications");
-      res.redirect("/home");
-    }
+    //username
+    let username = req.user ? req.user.username : "Guest";
+    // Count total items in the pantry
+    const totalItems = await Inventory.countDocuments({ owner: req.user._id });
+
+    // Count items expiring soon (within the next 7 days)
+    const expiringItemsCount = await Inventory.countDocuments({
+      expiryDate: {
+        $lte: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
+      },
+      owner: req.user._id,
+    });
+    //category chart
+    const results = await Inventory.aggregate([
+      { $match: { owner: req.user._id } },
+      { $group: { _id: "$category", totalQuantity: { $sum: "$quantity" } } },
+      { $sort: { totalQuantity: -1 } }, // Sort by total quantity
+    ]);
+    // Extract category names and quantities for Chart.js
+    const categories = results.map((result) => result._id);
+    const quantities = results.map((result) => result.totalQuantity);
+    //expire iteam
+    const upcomingExpiry = await Inventory.find({
+      expiryDate: {
+        $lte: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
+      },
+      owner: req.user._id,
+    });
+    upcomingExpiry.forEach((item) => {
+      const daysLeft = Math.ceil(
+        (item.expiryDate - Date.now()) / (1000 * 60 * 60 * 24)
+      );
+      item.daysLeft = daysLeft;
+    });
+    res.render("dashboard/dashboard.ejs", {
+      username,
+      categories,
+      quantities,
+      upcomingExpiry,
+      totalItems,
+      expiringItemsCount,
+    });
   })
 );
 
-//********************************************************************************//
+app.get(
+  "/dashboard/inventory",
+  isLoggedIn,
+  wrapAsync(async (req, res) => {
+    const inventoryItems = await Inventory.find({ owner: req.user._id });
+
+    res.render("dashboard/inventory.ejs", { inventoryItems, moment });
+  })
+);
+app.get("/dashboard/addinventory", isLoggedIn, (req, res) => {
+  res.render("dashboard/addinventory.ejs");
+});
 
 // Add inventory to database
 app.post(
-  "/inventory/add",
+  "/dashboard/addinventory",
+  isLoggedIn,
+  validateInventory,
   wrapAsync(async (req, res) => {
-    const { itemName, expiryDate, quantity } = req.body;
-    try {
-      // Save inventory to the database
-      const newInventory = new Inventory({
-        itemName,
-        expiryDate,
-        quantity,
-        owner: req.user._id,
-      });
-      await newInventory.save();
+    //Save inventory to the database
+    const newInventory = new Inventory(req.body.inventory, {
+      owner: req.user._id,
+    });
+    await newInventory.save();
 
-      req.flash("success", "Inventory item added successfully!");
-      res.redirect("/inventory");
-    } catch (error) {
-      console.error("Error adding inventory:", error);
-      req.flash("error", "Failed to add inventory item.");
-      res.redirect("/inventory");
-    }
+    req.flash("success", "Inventory item added successfully!");
+    res.redirect("/dashboard/inventory");
   })
 );
 
-// View inventory
+// edit item
 app.get(
-  "/inventory/view",
+  "/dashboard/inventory/:id/edit",
   isLoggedIn,
+  isOwner,
   wrapAsync(async (req, res) => {
-    try {
-      const inventoryItems = await Inventory.find({ owner: req.user._id });
-      res.render("users/viewinventory", { inventoryItems });
-    } catch (err) {
-      console.error(err);
-      req.flash("error", "Unable to fetch inventory items");
-      res.redirect("/viewinventory");
-    }
+    let { id } = req.params;
+    const Inventoryitem = await Inventory.findById(id);
+    res.render("dashboard/editinventory.ejs", { Inventoryitem });
+  })
+);
+
+// update item
+app.put(
+  "/dashboard/inventory/:id",
+  isLoggedIn,
+  isOwner,
+  validateInventory,
+  wrapAsync(async (req, res) => {
+    let { id } = req.params;
+
+    await Inventory.findByIdAndUpdate(id, { ...req.body.inventory });
+    res.redirect("/dashboard/inventory");
   })
 );
 
 // Delete inventory item
 app.post(
-  "/inventory/delete/:id",
+  "/dashboard/inventory/delete/:id",
   isLoggedIn,
+  isOwner,
   wrapAsync(async (req, res) => {
-    try {
-      const { id } = req.params;
-      await Inventory.findByIdAndDelete(id);
+    const { id } = req.params;
+    await Inventory.findByIdAndDelete(id);
 
-      req.flash("success", "Inventory item deleted successfully!");
-      res.redirect("/inventory/view");
-    } catch (err) {
-      console.error(err);
-      req.flash("error", "Failed to delete inventory item.");
-      res.redirect("/inventory/view");
-    }
+    req.flash("success", "Inventory item deleted successfully!");
+    res.redirect("/dashboard/inventory");
   })
 );
 
 // recipie suggestions
 app.get(
-  "/recipies",
+  "/dashboard/recipes",
   isLoggedIn,
   wrapAsync(async (req, res) => {
-    try {
-      const inventoryItems = await Inventory.find({ owner: req.user._id });
-      if (inventoryItems.length === 0) {
-        res.render("pages/recipies.ejs", {
-          recipes: [],
-          message: "No ingredients found in inventory.",
-        });
-      } else {
-        const ingredients = inventoryItems
-          .map((item) => item.itemName)
-          .join(",");
-        const apiUrl = `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${encodeURIComponent(
-          ingredients
-        )}&number=10&ranking=1&ignorePantry=true&apiKey=${
-          process.env.SPOONACULAR_RECIPIE_KEY
-        }`;
-
-        // Call Spoonacular API
-        const response = await axios.get(apiUrl);
-        res.render("pages/recipies.ejs", {
-          recipes: response.data,
-          message: "",
-        });
-      }
-    } catch (error) {
-      console.error("Error fetching recipes:", error);
-      res.status(500).json({ error: "Failed to fetch recipes" });
+    const userid = req.user._id;
+    const inventoryItems = await Inventory.find({ owner: req.user._id });
+    if (inventoryItems.length === 0) {
+      return res.render("dashboard/recipes.ejs", {
+        recipes: [],
+        message: "No ingredients found in inventory.",
+        userid,
+      });
     }
+
+    // Create a comma-separated list of ingredient names
+    const ingredients = inventoryItems.map((item) => item.itemName).join(",");
+    const apiUrl = `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${encodeURIComponent(
+      ingredients
+    )}&number=10&ranking=2&ignorePantry=true&apiKey=${
+      process.env.SPOONACULAR_RECIPIE_KEY
+    }`;
+
+    // Call Spoonacular API and destructure the response
+    const { data: recipes } = await axios.get(apiUrl);
+    res.render("dashboard/recipes.ejs", { recipes, message: "", userid });
+  })
+);
+
+async function getRecipeIngredients(recipeId) {
+  const url = `https://api.spoonacular.com/recipes/${recipeId}/information?apiKey=${process.env.SPOONACULAR_RECIPIE_KEY}`;
+
+  try {
+    const response = await axios.get(url);
+
+    // Extract ingredients from response
+    return response.data.extendedIngredients.map((ingredient) => ({
+      name: ingredient.name,
+      amount: ingredient.amount, // Amount (e.g., 2.0)
+      unit: ingredient.unit, // Unit (e.g., cups, tbsp)
+    }));
+  } catch (error) {
+    console.error("Error fetching recipe ingredients:", error);
+    return [];
+  }
+}
+
+async function getMissingIngredients(userId, recipeId) {
+  const pantryItems = await Inventory.find({ userId });
+  const recipeIngredients = await getRecipeIngredients(recipeId);
+
+  const missingIngredients = recipeIngredients.filter((recipeIngredient) => {
+    const pantryItem = pantryItems.find(
+      (item) => item.name.toLowerCase() === recipeIngredient.name.toLowerCase()
+    );
+    return !pantryItem || pantryItem.quantity < recipeIngredient.amount;
+  });
+
+  return missingIngredients;
+}
+
+//shopping list
+app.get(
+  "/dashboard/shopping/:userId/:recipeId",
+  isLoggedIn,
+  wrapAsync(async (req, res) => {
+    const { userId, recipeId } = req.params;
+    const missingIngredients = await getMissingIngredients(userId, recipeId);
+    res.render("dashboard/shoppinglist.ejs", { missingIngredients });
+  })
+);
+
+// recipe search
+app.get(
+  "/dashboard/recipesearch",
+  isLoggedIn,
+  wrapAsync(async (req, res) => {
+    const { query, diet, cuisine, type, maxReadyTime } = req.query;
+    const userid = req.user._id;
+    // Validate search query input
+    if (!query || query.trim() === "") {
+      return res.status(400).render("dashboard/searchrecipes.ejs", {
+        error: "Please enter a search term",
+        searched: false,
+        recipes: [],
+        userid,
+      });
+    }
+
+    // Build query parameters using conditional spreading
+    const params = {
+      apiKey: process.env.SPOONACULAR_RECIPIE_KEY,
+      query: query.trim(),
+      number: 10,
+      addRecipeInformation: true,
+      ignorePantry: true,
+    };
+    if (diet) params.diet = diet;
+    if (cuisine) params.cuisine = cuisine;
+    if (type) params.type = type;
+    if (maxReadyTime) params.maxReadyTime = maxReadyTime;
+    const { data } = await axios.get(
+      "https://api.spoonacular.com/recipes/complexSearch",
+      { params }
+    );
+
+    // Render results with search criteria so the form is pre-populated
+    return res.render("dashboard/searchrecipes.ejs", {
+      recipes: data.results,
+      searched: true,
+      userid,
+    });
   })
 );
 
@@ -270,6 +407,7 @@ app.get("/signup", (req, res) => {
 });
 app.post(
   "/signup",
+  validateUser,
   wrapAsync(async (req, res) => {
     try {
       let { username, email, password } = req.body;
@@ -300,10 +438,10 @@ app.post(
     failureRedirect: "/login",
     failureFlash: true,
   }),
-  wrapAsync(async (req, res) => {
+  async (req, res) => {
     req.flash("success", "Welcome to Smart Pantry");
     res.redirect("/home");
-  })
+  }
 );
 
 app.get("/logout", (req, res, next) => {

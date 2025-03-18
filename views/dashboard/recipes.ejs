@@ -1,4 +1,4 @@
-<% layout("/layouts/boilerplate") %>
+<% layout("/layouts/dashboard") %>
 
 <style>
   .empty-state-container {
@@ -87,8 +87,6 @@
     height: 3.6rem;
     overflow: hidden;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
   }
 
   .recipe-card {
@@ -140,6 +138,30 @@
     padding: 0.6rem 0;
     font-weight: 600;
     letter-spacing: 0.5px;
+  }
+
+  /* shopping list btn */
+  .btn-shopping-list {
+    display: inline-flex;
+    align-items: center;
+    background-color: #4caf50;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  .btn-shopping-list:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .btn-shopping-list i {
+    margin-right: 8px;
   }
 
   .main-title {
@@ -252,9 +274,15 @@
           <a
             href="https://spoonacular.com/recipes/<%= encodeURIComponent(recipe.title) %>-<%= recipe.id %>"
             target="_blank"
-            class="btn btn-primary view-btn"
+            class="btn btn-primary view-btn mb-3"
           >
             <i class="fas fa-external-link-alt mr-2"></i> View Full Recipe
+          </a>
+          <a
+            href="/dashboard/shopping/<%= userid %>/<%= recipe.id %>"
+            class="btn-shopping-list"
+          >
+            <i class="fas fa-shopping-cart mr-2"></i> Generate Shopping List
           </a>
         </div>
       </div>

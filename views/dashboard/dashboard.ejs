@@ -1,0 +1,248 @@
+<% layout("/layouts/dashboard") %>
+<style>
+  /* Cards */
+  .card {
+    background-color: #ffffff;
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.08);
+  }
+
+  .card-title {
+    color: #2c3e50;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    font-size: 1.25rem;
+  }
+
+  @media (max-width: 768px) {
+    .card-title {
+      font-size: 1.1rem;
+    }
+  }
+
+  .card-text {
+    color: #64748b;
+    margin-bottom: 1.5rem;
+    font-weight: 400;
+  }
+</style>
+<section class="welcome-section py-4">
+  <div class="container">
+    <div class="row align-items-center text-center text-md-start">
+      <div class="col-md-8 order-2 order-md-1">
+        <h1 class="welcome-title">
+          Welcome back, <%= username %>! <span class="wave">👋</span>
+        </h1>
+        <p class="welcome-stats">
+          You have
+          <strong class="text-primary"><%= totalItems %> items</strong> in your
+          pantry,
+          <span class="text-danger"
+            ><strong><%= expiringItemsCount %> items</strong> expiring
+            soon</span
+          >
+        </p>
+      </div>
+      <div class="col-md-4 text-md-end order-1 order-md-2 mb-3 mb-md-0">
+        <div class="d-flex justify-content-center justify-content-md-end">
+          <p class="current-date mb-0">
+            <i class="fa-regular fa-calendar me-2"></i><%- new
+            Date().toLocaleDateString("en-IN", { weekday: "long", year:
+            "numeric", month: "long", day: "numeric", }); %>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Quick Actions Section -->
+<section class="quick-actions py-4">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card action-card">
+          <div class="card-body">
+            <div class="action-icon mb-3">
+              <i class="fa-solid fa-circle-plus text-primary"></i>
+            </div>
+            <h5 class="card-title">Add New Item</h5>
+            <p class="card-text">Quickly add items to your pantry</p>
+            <a href="/dashboard/addinventory">
+              <button class="btn btn-primary">
+                <i class="fa-solid fa-plus me-2"></i>Add Item
+              </button>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card action-card">
+          <div class="card-body">
+            <div class="action-icon mb-3">
+              <i class="fa-solid fa-cart-shopping text-success"></i>
+            </div>
+            <h5 class="card-title">Shopping List</h5>
+            <p class="card-text">Generate list based on your needs</p>
+            <button class="btn btn-success">
+              <i class="fa-solid fa-list-check me-2"></i>Create List
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card action-card">
+          <div class="card-body">
+            <div class="action-icon mb-3">
+              <i class="fa-solid fa-book text-warning"></i>
+            </div>
+            <h5 class="card-title">Recipe Ideas</h5>
+            <p class="card-text">Discover recipes with your items</p>
+            <a href="/dashboard/recipes">
+              <button class="btn btn-warning text-dark">
+                <i class="fa-solid fa-magnifying-glass me-2"></i>Find Recipes
+              </button>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Main Dashboard -->
+<section class="dashboard-main py-4">
+  <div class="container">
+    <div class="row g-4">
+      <!-- Inventory Overview -->
+      <div class="col-lg-8">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h5 class="card-title mb-0">
+                <i class="fa-solid fa-chart-pie me-2"></i>Inventory Overview
+              </h5>
+            </div>
+            <% if(categories.length > 0 && quantities.length > 0) { %>
+            <div class="chart-container">
+              <canvas id="categoryChart"></canvas>
+            </div>
+            <% } else { %>
+            <div>
+              <p>No data available</p>
+            </div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Expiring Items -->
+      <div class="col-lg-4">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">
+              <i class="fa-solid fa-triangle-exclamation me-2"></i>Expiring Soon
+            </h5>
+            <div class="expiring-items">
+              <% if (upcomingExpiry && upcomingExpiry.length > 0) { %> <% for
+              (let item of upcomingExpiry) { %>
+              <div class="expiring-item">
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="item-name"> <%= item.itemName %> </span>
+                  <span class="days-left"><%= item.daysLeft %> days</span>
+                </div>
+                <div class="progress">
+                  <div
+                    class="progress-bar bg-info"
+                    style="width: <%= item.daysLeft * 10 %>%"
+                  ></div>
+                </div>
+              </div>
+              <% } %> <% } else { %>
+              <p class="text-muted">No expiring items</p>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+    const categories = <%- JSON.stringify(categories || []) %>;
+  const quantities = <%- JSON.stringify(quantities || []) %>;
+
+
+  const chartCategories =  categories ;
+  const chartQuantities =  quantities ;
+
+  // Chart color scheme
+  const chartColors = [
+    'rgba(67, 97, 238, 0.8)',
+    'rgba(76, 201, 240, 0.8)',
+    'rgba(247, 37, 133, 0.8)',
+    'rgba(58, 134, 255, 0.8)',
+    'rgba(245, 105, 96, 0.8)',
+    'rgba(114, 9, 183, 0.8)'
+  ];
+
+  // Get the canvas context
+  const ctx = document.getElementById("categoryChart").getContext("2d");
+
+  // Render Doughnut Chart
+  new Chart(ctx, {
+    type: "doughnut",
+    data: {
+      labels: chartCategories,
+      datasets: [
+        {
+          label: "Items",
+          data: chartQuantities,
+          backgroundColor: chartColors,
+          borderColor: "#ffffff",
+          borderWidth: 2,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: "bottom",
+          labels: {
+            padding: 20,
+            font: {
+              size: 12
+            }
+          }
+        },
+        tooltip: {
+          backgroundColor: 'rgba(0, 0, 0, 0.7)',
+          padding: 15,
+          callbacks: {
+            label: function(context) {
+              const label = context.label || '';
+              const value = context.raw || 0;
+
+              return ` ${label} : ${value}`;
+            }
+          }
+        }
+      },
+      cutout: '60%',
+    },
+  });
+</script>

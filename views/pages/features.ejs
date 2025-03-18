@@ -1,178 +1,200 @@
 <% layout("/layouts/boilerplate") %>
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,900;1,400;1,900&display=swap');
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
-
-
-#header>p{
-  text-align:center;
-  font-size:1.5rem;
-  font-style:italic;
-}
-.container{
-  width:100vw;
-  display:flex;
-  justify-content:space-around;
-  flex-wrap:wrap;
-  padding:40px 20px;
-}
-.card{
-  display:flex;
-  flex-direction:column;
-  width:400px;
-  margin-bottom:60px;
-}
-.card>div{
-  box-shadow:0 15px 20px 0 rgba(0,0,0,0.5);
-}
-.card-image{
-  width:400px;
-  height:250px;
-}
-.card-image>img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  object-position:bottom;
-}
-.card-text{
-  margin:-30px auto;
-  margin-bottom:-50px;
-  height:350px;
-  width:300px;
-  background-color:rgba(0,0,0,0.7);
-  color:#fff;
-  padding:20px;
-}
-.card-meal-type{
-  font-style:italic;
-}
-.card-title{
-  font-size:2.2rem;
-  margin-bottom:20px;
-  margin-top:5px;
-}
-.card-body{
-  font-size:1.25rem;
-}
-.card-price{
-  width:100px;
-  height:100px;
-  background-color:#970C0A;
-  color:#fff;
-  margin-left:auto;
-  font-size:2rem;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
-
-  /*Animated font*/
-/* General Styles */
-/* General Styles */
-#header {
+  /* Base styles */
+  #header {
     text-align: center;
     padding: 2rem 0;
-    background: rgba(0,0,0,0.4);
-   
-    position: relative;
-}
+    background: #2c3e50;
+    margin-bottom: 2rem;
+  }
 
-/* Header Text Animation */
-.animated-header {
-    font-size: 3rem;
+  .animated-header {
+    font-size: 2.5rem;
     color: white;
     text-transform: uppercase;
-    letter-spacing: 4px;
-    animation: zoomReveal 2s ease-out forwards; /* Add forwards to persist the final state */
-    opacity: 0; /* Ensure hidden before animation starts */
-}
+    animation: fadeIn 1s ease-out;
+  }
 
-/* Creative Animation */
-@keyframes zoomReveal {
-    0% {
-        opacity: 0;
-        transform: scale(0.5) rotateX(90deg);
-    }
-    50% {
-        opacity: 0.8;
-        transform: scale(1.2) rotateX(10deg);
-    }
-    100% {
-        opacity: 1;
-        transform: scale(1) rotateX(0deg);
-    }
-}
+  .features {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    padding: 0 1rem 2rem;
+  }
 
-/* Responsive Design */
-@media (max-width: 768px) {
+  .card {
+    width: calc(25% - 1rem);
+    min-width: 250px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s;
+    background: white;
+  }
+
+  .card:hover {
+    transform: translateY(-8px);
+  }
+
+  .card-image {
+    height: 180px;
+    overflow: hidden;
+  }
+
+  .card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .card-text {
+    padding: 1rem;
+    position: relative;
+  }
+
+  .card-meal-type {
+    background-color: #e74c3c;
+    color: white;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    position: absolute;
+    top: -12px;
+    left: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+  }
+
+  .card-title {
+    margin: 1rem 0 0.5rem;
+    color: #2c3e50;
+    font-size: 1.25rem;
+  }
+
+  .card-body {
+    color: #555;
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  .card-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  /* Simple animation */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* Responsive breakpoints */
+  @media (max-width: 1024px) {
+    .card {
+      width: calc(33.33% - 1rem);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .card {
+      width: calc(50% - 1rem);
+    }
+  }
+
+  @media (max-width: 480px) {
     .animated-header {
-        font-size: 2.5rem;
-        letter-spacing: 2px;
+      font-size: 1.8rem;
     }
-}
 
-@media (max-width: 480px) {
-    .animated-header {
-        font-size: 2rem;
-        letter-spacing: 1px;
+    .card {
+      width: 100%;
     }
-}
-
-
+  }
 </style>
+
 <div id="header">
   <h1 class="animated-header">Features</h1>
 </div>
-    <div class="container">
-    <a href="/Inventory">
-    <div class="card">
+
+<div class="features">
+  <div class="card">
+    <a href="/dashboard/inventory" class="card-link">
       <div class="card-image">
-    <img src="../images/inventory.jpg" style="height: 600px" width="600px">
-      </div></a>
-      <div class="card-text">
-        <p class="card-meal-type">1</p>
-        <h2 class="card-title">Manage Inventory</h2>
-        <p class="card-body">Keep track of all your pantry items, update stock levels, and organize food essentials effortlessly.</p>
+        <img src="/images/inventory.jpeg" alt="Organized pantry shelves" />
       </div>
-    </div>
-    <a href="/recipies">
-      <div class="card">
-      <div class="card-image">
-        <img src="../images/recipe.jpg "  style="height: 550px" width="550px">
-      </div></a>
       <div class="card-text">
-        <p class="card-meal-type">2</p>
-        <h2 class="card-title">Recipe Suggestion</h2>
-        <p class="card-body">Keep track of all your pantry items, update stock levels, and organize food essentials effortlessly.
+        <span class="card-meal-type">1</span>
+        <h2 class="card-title">Manage Inventory</h2>
+        <p class="card-body">
+          Keep track of all your pantry items, update stock levels, and organize
+          food essentials.
         </p>
       </div>
-    </div>
-    <a href="/Shoppinglist">
-      <div class="card">
+    </a>
+  </div>
+
+  <div class="card">
+    <a href="/dashboard/recipes" class="card-link">
       <div class="card-image">
-        <img src="../images/shopping.jpg" style="height: 550px" width="550px">
-      </div></a>
-      <div class="card-text">
-        <p class="card-meal-type">3</p>
-        <h2 class="card-title">Shopping List Generator</h2>
-        <p class="card-body"> Automatically create shopping lists for missing ingredients to complete your favorite recipes.</p>
+        <img
+          src="/images/recipe suggestion.jpeg"
+          alt="Recipe book with ingredients"
+        />
       </div>
-    </div>
-    <a href="/notification">
-      <div class="card">
+      <div class="card-text">
+        <span class="card-meal-type">2</span>
+        <h2 class="card-title">Recipe Suggestion</h2>
+        <p class="card-body">
+          Discover meal ideas based on what's already in your pantry with our
+          smart suggestion system.
+        </p>
+      </div>
+    </a>
+  </div>
+
+  <div class="card">
+    <a href="/dashboard" class="card-link">
       <div class="card-image">
-        <img src="../images/notialert.jpg" style="height: 550px" width="550px">
-      </div></a>
-      <div class="card-text">
-        <p class="card-meal-type">4</p>
-        <h2 class="card-title">Notification alert</h2>
-        <p class="card-body">Stay updated with alerts for expiring items, low stock, and other pantry management needs.</p>
+        <img
+          src="/images/shoopinglist.jpeg"
+          alt="Shopping list and groceries"
+        />
       </div>
-    </div>
-    
-    </div>
+      <div class="card-text">
+        <span class="card-meal-type">3</span>
+        <h2 class="card-title">Shopping List</h2>
+        <p class="card-body">
+          Automatically create shopping lists for missing ingredients to
+          complete your recipes.
+        </p>
+      </div>
+    </a>
+  </div>
+
+  <div class="card">
+    <a href="/dashboard" class="card-link">
+      <div class="card-image">
+        <img
+          src="/images/notification.jpeg"
+          alt="Smartphone with notifications"
+        />
+      </div>
+      <div class="card-text">
+        <span class="card-meal-type">4</span>
+        <h2 class="card-title">Notifications</h2>
+        <p class="card-body">
+          Stay updated with alerts for expiring items, low stock, and other
+          pantry management needs.
+        </p>
+      </div>
+    </a>
+  </div>
+</div>
