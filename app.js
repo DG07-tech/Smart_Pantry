@@ -187,12 +187,18 @@ app.get(
     //category chart
     const results = await Inventory.aggregate([
       { $match: { owner: req.user._id } },
-      { $group: { _id: "$category", totalQuantity: { $sum: "$quantity" } } },
-      { $sort: { totalQuantity: -1 } }, // Sort by total quantity
+      {
+        $group: {
+          _id: "$category",
+          itemCount: { $sum: 1 },
+        },
+      },
+      { $sort: { itemCount: -1 } },
     ]);
+
     // Extract category names and quantities for Chart.js
     const categories = results.map((result) => result._id);
-    const quantities = results.map((result) => result.totalQuantity);
+    const itemCounts = results.map((result) => result.itemCount);
     //expire iteam
     const upcomingExpiry = await Inventory.find({
       expiryDate: {
@@ -209,7 +215,7 @@ app.get(
     res.render("dashboard/dashboard.ejs", {
       username,
       categories,
-      quantities,
+      itemCounts,
       upcomingExpiry,
       totalItems,
       expiringItemsCount,
@@ -237,7 +243,9 @@ app.post(
   validateInventory,
   wrapAsync(async (req, res) => {
     //Save inventory to the database
-    const newInventory = new Inventory(req.body.inventory, {
+
+    const newInventory = new Inventory({
+      ...req.body.inventory,
       owner: req.user._id,
     });
     await newInventory.save();
