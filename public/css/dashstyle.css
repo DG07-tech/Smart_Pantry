@@ -32,13 +32,30 @@ body {
   color: #2c3e50 !important;
   font-weight: 500;
   padding: 0.5rem 1rem;
-  transition: color 0.3s ease;
+  transition: color 0.3s ease, background-color 0.3s ease;
+  border-radius: 0.25rem;
+  position: relative;
 }
 
-.navbar-toggler:focus {
-  box-shadow: none;
+.nav-link:hover {
+  color: #4361ee;
 }
 
+.nav-link.active {
+  font-weight: 700;
+  color: #4361ee !important;
+}
+
+.nav-link.active::after {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 3px;
+  background-color: #2c3e50;
+  border-radius: 2px;
+}
 /* footer */
 .footer {
   background-color: #ffffff;

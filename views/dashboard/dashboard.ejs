@@ -94,9 +94,11 @@
             </div>
             <h5 class="card-title">Shopping List</h5>
             <p class="card-text">Generate list based on your needs</p>
-            <button class="btn btn-success">
-              <i class="fa-solid fa-list-check me-2"></i>Create List
-            </button>
+            <a href="/dashboard/recipes">
+              <button class="btn btn-success">
+                <i class="fa-solid fa-list-check me-2"></i>Create List
+              </button>
+            </a>
           </div>
         </div>
       </div>
@@ -109,7 +111,7 @@
             </div>
             <h5 class="card-title">Recipe Ideas</h5>
             <p class="card-text">Discover recipes with your items</p>
-            <a href="/dashboard/recipes">
+            <a href="/dashboard/recipesearch">
               <button class="btn btn-warning text-dark">
                 <i class="fa-solid fa-magnifying-glass me-2"></i>Find Recipes
               </button>
@@ -134,7 +136,7 @@
                 <i class="fa-solid fa-chart-pie me-2"></i>Inventory Overview
               </h5>
             </div>
-            <% if(categories.length > 0 && quantities.length > 0) { %>
+            <% if(categories.length > 0 && itemCounts.length > 0) { %>
             <div class="chart-container">
               <canvas id="categoryChart"></canvas>
             </div>
@@ -181,14 +183,12 @@
 </section>
 
 <script>
-    const categories = <%- JSON.stringify(categories || []) %>;
-  const quantities = <%- JSON.stringify(quantities || []) %>;
+  const categories = <%- JSON.stringify(categories || []) %>;
+  const itemCounts = <%- JSON.stringify(itemCounts || []) %>;
 
+  const chartCategories = categories;
+  const chartQuantities = itemCounts;
 
-  const chartCategories =  categories ;
-  const chartQuantities =  quantities ;
-
-  // Chart color scheme
   const chartColors = [
     'rgba(67, 97, 238, 0.8)',
     'rgba(76, 201, 240, 0.8)',
@@ -198,10 +198,8 @@
     'rgba(114, 9, 183, 0.8)'
   ];
 
-  // Get the canvas context
   const ctx = document.getElementById("categoryChart").getContext("2d");
 
-  // Render Doughnut Chart
   new Chart(ctx, {
     type: "doughnut",
     data: {
@@ -236,7 +234,6 @@
             label: function(context) {
               const label = context.label || '';
               const value = context.raw || 0;
-
               return ` ${label} : ${value}`;
             }
           }
