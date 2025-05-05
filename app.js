@@ -368,11 +368,19 @@ app.get(
 );
 
 // recipe search
-app.get(
+
+app.get("/dashboard/recipesearch", isLoggedIn, (req, res) => {
+  res.render("dashboard/searchrecipes.ejs", {
+    recipes: [],
+    searched: false,
+    userid: req.user._id,
+  });
+});
+app.post(
   "/dashboard/recipesearch",
   isLoggedIn,
   wrapAsync(async (req, res) => {
-    const { query, diet, cuisine, type, maxReadyTime } = req.query;
+    const { query, diet, cuisine, type, maxReadyTime } = req.body;
     const userid = req.user._id;
     // Validate search query input
     if (!query || query.trim() === "") {
@@ -418,7 +426,7 @@ app.post(
   validateUser,
   wrapAsync(async (req, res) => {
     try {
-      let { username, email, password } = req.body;
+      let { username, email, password } = req.body.user;
       const newUser = new User({ email, username });
       const registeredUser = await User.register(newUser, password);
       req.login(registeredUser, (err) => {
